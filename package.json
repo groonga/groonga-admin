@@ -14,8 +14,8 @@
     "name": "Kouhei Sutou",
     "email": "kou@clear-code.com"
   },
-  "contributors": {
-  },
+  "contributors": [
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/groonga/groonga-admin.git"
