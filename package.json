@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "description": "Groonga Admin is an administration Web UI for Groonga",
   "keywords": [
-    "Groonga",
+    "Groonga"
   ],
   "homepage": "https://github.com/groonga/groonga-admin",
   "bugs": {
-    "https://github.com/groonga/groonga-admin/issues"
+    "url": "https://github.com/groonga/groonga-admin/issues"
   },
   "license": "LGPL-2.1+",
   "author": {
