@@ -1,0 +1,6 @@
+notifications:
+  recipients:
+    - groonga-commit@lists.sourceforge.jp
+language: node_js
+node_js:
+  - 0.10
