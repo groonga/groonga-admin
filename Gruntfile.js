@@ -69,13 +69,23 @@ module.exports = function (grunt) {
         port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: 'localhost',
-        livereload: 35729
+        livereload: 35729,
+      },
+      server: {
+        proxies: [
+          {
+            context: '/d',
+            host: process.env.GROONGA_HOST || 'localhost',
+            port: 10041
+          }
+        ]
       },
       livereload: {
         options: {
           open: true,
           middleware: function (connect) {
             return [
+              require('grunt-connect-proxy/lib/utils').proxyRequest,
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -396,6 +406,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'wiredep',
+      'configureProxies:server',
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
