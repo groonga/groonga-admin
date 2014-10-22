@@ -1,0 +1,30 @@
+<div ng-controller="TableSearchController">
+  <h1>Search</h1>
+  <div class="container">
+    <p class="error-message">{{message}}</p>
+    <p class="statistics">
+      <span id="elapsed-time">{{elapsedTimeInMilliseconds | number : 3}}ms</span>
+      <span id="n-total-records">({{nTotalRecords}})</span>
+    </p>
+  </div>
+  <div class="container">
+    <div class="table-responsive">
+      <table class="search-result">
+        <thead>
+          <tr>
+            <th ng-repeat="column in columns track by $index">
+              {{column.name}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="record in records track by $index">
+            <td ng-repeat="row in record track by $index">
+              {{row}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
