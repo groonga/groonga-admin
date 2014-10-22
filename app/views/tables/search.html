@@ -1,7 +1,9 @@
 <div ng-controller="TableSearchController">
   <h1 class="page-header">Search</h1>
+  <div class="alert alert-warning" ng-show="message.length &gt; 0">
+    <p>{{message}}</p>
+  </div>
   <div class="container">
-    <p class="error-message">{{message}}</p>
     <p class="statistics">
       <span id="elapsed-time">{{elapsedTimeInMilliseconds | number : 3}}ms</span>
       <span id="n-total-records">({{nTotalRecords}})</span>
