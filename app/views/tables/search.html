@@ -14,8 +14,25 @@
         <input type="search" class="form-control" ng-model="parameters.query">
       </div>
     </div>
-    <button ng-click="search(parameters)" class="btn btn-default">Search</button>
-    <button ng-click="clear()" class="btn btn-default">Clear</button>
+    <div class="form-group">
+      Records show style:
+      <label class="radio-inline">
+        <input type="radio"
+               ng-model="recordsShowType"
+               value="table">
+        Table
+      </label>
+      <label class="radio-inline">
+        <input type="radio"
+               ng-model="recordsShowType"
+               value="list">
+        List
+      </label>
+    </div>
+    <div class="form-group">
+      <button ng-click="search(parameters)" class="btn btn-default">Search</button>
+      <button ng-click="clear()" class="btn btn-default">Clear</button>
+    </div>
   </form>
   <p class="command-line">
     <code id="groonga-command-line">{{commandLine}}</code>
