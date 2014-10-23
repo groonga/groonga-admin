@@ -59,7 +59,7 @@ angular.module('groongaAdminApp')
       .success(function(data) {
         $scope.commandLine = buildCommandLine('select', parameters);
 
-        var response = new window.GroongaResponse.Select(data);
+        var response = new GroongaResponse.Select(data);
         $scope.elapsedTimeInMilliseconds = response.elapsedTime() * 1000;
         if (!response.isSuccess()) {
           $scope.message =
