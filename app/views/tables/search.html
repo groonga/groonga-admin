@@ -3,6 +3,20 @@
   <div class="alert alert-warning" ng-show="message.length &gt; 0">
     <p>{{message}}</p>
   </div>
+  <form role="search">
+    <div class="form-group">
+      <div class="input-group">
+        <span class="input-group-addon">match_columns</span>
+        <input type="search" class="form-control" ng-model="parameters.match_columns">
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon">query</span>
+        <input type="search" class="form-control" ng-model="parameters.query">
+      </div>
+    </div>
+    <button ng-click="search(parameters)" class="btn btn-default">Search</button>
+    <button ng-click="clear()" class="btn btn-default">Clear</button>
+  </form>
   <p class="command-line">
     <code id="groonga-command-line">{{commandLine}}</code>
   </p>
