@@ -68,12 +68,28 @@ body {
   }
 }
 
-table.search-result {
-  @extend .table;
-  @extend .table-striped;
-  @extend .table-bordered;
-  @extend .table-hover;
-  @extend .table-condensed;
+.table-search-result {
+  @extend .table-responsive;
+
+  table {
+    @extend .table;
+    @extend .table-striped;
+    @extend .table-bordered;
+    @extend .table-hover;
+    @extend .table-condensed;
+  }
+}
+
+.list-search-result {
+  @extend .container-fluid;
+
+  table {
+    @extend .table;
+    @extend .table-striped;
+    @extend .table-bordered;
+    @extend .table-hover;
+    @extend .table-condensed;
+  }
 }
 
 /* Responsive: Portrait tablets and up */

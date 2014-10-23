@@ -29,6 +29,7 @@ angular.module('groongaAdminApp')
     }
 
     $scope.table = $routeParams.table;
+    $scope.recordsShowType = 'table';
     $scope.columns = [];
     $scope.records = [];
     $scope.commandLine = '';
@@ -69,6 +70,13 @@ angular.module('groongaAdminApp')
         }
         $scope.nTotalRecords = response.nTotalRecords();
         $scope.columns = response.columns();
-        $scope.records = response.records();
+        $scope.records = response.records().map(function(record) {
+          return record.map(function(value, index) {
+            return {
+              value: value,
+              column: $scope.columns[index]
+            };
+          });
+        });
       });
   });

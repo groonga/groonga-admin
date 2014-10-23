@@ -24,8 +24,9 @@
     <span id="n-total-records">{{nTotalRecords}} records</span>
     <span id="elapsed-time">({{elapsedTimeInMilliseconds | number : 3}}ms)</span>
   </p>
-  <div class="table-responsive">
-    <table class="search-result">
+
+  <div class="table-search-result" ng-show="recordsShowType == 'table'">
+    <table>
       <thead>
         <tr>
           <th ng-repeat="column in columns track by $index">
@@ -35,11 +36,28 @@
       </thead>
       <tbody>
         <tr ng-repeat="record in records track by $index">
-          <td ng-repeat="row in record track by $index">
-            {{row}}
+          <td ng-repeat="element in record track by $index">
+            {{element.value}}
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="list-search-result" ng-show="recordsShowType == 'list'">
+    <div class="row" ng-repeat="record in records track by $index">
+      <div class="col-md12">
+        <div class="table-responsive">
+          <table>
+            <tbody>
+              <tr ng-repeat="item in record track by $index">
+                <th>{{item.column.name}}</th>
+                <td>{{item.value}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
