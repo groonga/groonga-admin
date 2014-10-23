@@ -17,15 +17,14 @@ angular.module('groongaAdminApp')
 
     function buildCommandLine(name, parameters) {
       var components = [name];
-      for (var key in parameters) {
+      angular.forEach(parameters, function(value, key) {
         if (key === 'callback') {
-          continue;
+          return;
         }
-        components.push('--' + key);
 
-        var value = parameters[key];
+        components.push('--' + key);
         components.push('"' + escapeCommandValue(value) + '"');
-      }
+      });
       return components.join(' ');
     }
 
