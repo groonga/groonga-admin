@@ -3,26 +3,26 @@
   <div class="alert alert-warning" ng-show="message.length &gt; 0">
     <p>{{message}}</p>
   </div>
-    <p class="statistics">
-      <span id="elapsed-time">{{elapsedTimeInMilliseconds | number : 3}}ms</span>
-      <span id="n-total-records">({{nTotalRecords}})</span>
-    </p>
-    <div class="table-responsive">
-      <table class="search-result">
-        <thead>
-          <tr>
-            <th ng-repeat="column in columns track by $index">
-              {{column.name}}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="record in records track by $index">
-            <td ng-repeat="row in record track by $index">
-              {{row}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <p class="statistics">
+    <span id="elapsed-time">{{elapsedTimeInMilliseconds | number : 3}}ms</span>
+    <span id="n-total-records">({{nTotalRecords}})</span>
+  </p>
+  <div class="table-responsive">
+    <table class="search-result">
+      <thead>
+        <tr>
+          <th ng-repeat="column in columns track by $index">
+            {{column.name}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="record in records track by $index">
+          <td ng-repeat="row in record track by $index">
+            {{row}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
