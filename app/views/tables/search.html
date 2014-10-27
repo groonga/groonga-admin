@@ -34,6 +34,9 @@
     <li role="tab" data-toggle="tab">
       <a ng-click="style = 'list'">List</a>
     </li>
+    <li role="tab" data-toggle="tab">
+      <a ng-click="style = 'json'">JSON</a>
+    </li>
   </ul>
 
   <div class="table-search-result" ng-show="style == 'table'">
@@ -70,5 +73,9 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="list-search-result" ng-show="style == 'json'">
+    <pre>{{rawData | json}}</pre>
   </div>
 </div>

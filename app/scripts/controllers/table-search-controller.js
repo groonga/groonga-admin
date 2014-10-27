@@ -30,6 +30,7 @@ angular.module('groongaAdminApp')
 
     $scope.table = $routeParams.table;
     $scope.style = 'table';
+    $scope.rawData = [];
     $scope.columns = [];
     $scope.records = [];
     $scope.commandLine = '';
@@ -58,6 +59,8 @@ angular.module('groongaAdminApp')
     });
     $http.jsonp('/d/select.json', {params: parameters})
       .success(function(data) {
+        $scope.rawData = data;
+
         $scope.commandLine = buildCommandLine('select', parameters);
 
         var response = new GroongaResponse.Select(data);
