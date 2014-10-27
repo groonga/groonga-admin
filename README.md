@@ -17,7 +17,7 @@ TODO
 Install tools:
 
     % sudo npm install -y yo generator-angular grunt-cli bower
-    % sudo gem install  compass
+    % sudo gem install compass
 
 Clone repository:
 
