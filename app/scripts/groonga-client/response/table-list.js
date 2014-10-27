@@ -20,9 +20,6 @@
 
   TableList.prototype.tables = function() {
     var parameters = this.parameters();
-    console.log(this.body());
-    console.log(this.body()[1]);
-    console.log(this.body().slice(1));
     return this.body().slice(1).map(function(tableProperties) {
       var table = {};
       parameters.forEach(function(parameter, index) {
