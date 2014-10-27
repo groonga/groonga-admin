@@ -14,19 +14,53 @@ angular.module('groongaAdminApp')
     $scope.rawData = [];
     $scope.columns = [];
     $scope.records = [];
+    $scope.indexedColumns = [];
     $scope.commandLine = '';
     $scope.message = '';
     $scope.elapsedTimeInMilliseconds = 0;
     $scope.nTotalRecords = 0;
     $scope.parameters = angular.copy($location.search());
 
-    $scope.search = function(parameters) {
+    $scope.search = function() {
+      var parameters = angular.copy($scope.parameters);
+      parameters.match_columns = $scope.indexedColumns
+        .filter(function(indexedColumn) {
+          return indexedColumn.inUse;
+        })
+        .map(function(indexedColumn) {
+          return indexedColumn.name;
+        })
+        .join(',');
       $location.search(parameters);
     };
 
     $scope.clear = function() {
       $location.search({});
     };
+
+    var client = new GroongaClient($http);
+    client.execute('table_list')
+      .success(function(response) {
+        response.tables().forEach(function(table) {
+          client.execute('column_list', {table: table.name})
+            .success(function(response) {
+              response.columns().forEach(function(column) {
+                if (!column.isIndex) {
+                  return;
+                }
+                if (column.range != $scope.table) {
+                  return;
+                }
+                var matchColumns = $scope.parameters['match_columns'] || [];
+                column.sources.forEach(function(source) {
+                  var localName = source.split('.')[1];
+                  var inUse = matchColumns.indexOf(localName) != -1;
+                  $scope.indexedColumns.push({name: localName, inUse: inUse});
+                });
+              });
+            });
+        });
+      });
 
     var parameters = {
       table: $scope.table
@@ -37,7 +71,6 @@ angular.module('groongaAdminApp')
       }
       parameters[key] = value;
     });
-    var client = new GroongaClient($http);
     var request = client.execute('select', parameters);
     request.success(function(response) {
       $scope.rawData = response.rawData();
