@@ -6,6 +6,10 @@
   }
   GroongaResponse.Select = Select;
 
+  Select.prototype.rawData = function() {
+    return this._rawData;
+  };
+
   Select.prototype.header = function() {
     return this._rawData[0];
   };

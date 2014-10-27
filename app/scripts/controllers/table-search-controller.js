@@ -9,25 +9,6 @@
  */
 angular.module('groongaAdminApp')
   .controller('TableSearchController', function ($scope, $routeParams, $location, $http) {
-    function escapeCommandValue(value) {
-      return value.replace(/(["\\])/g, function(match) {
-        return '\\' + match[1];
-      });
-    }
-
-    function buildCommandLine(name, parameters) {
-      var components = [name];
-      angular.forEach(parameters, function(value, key) {
-        if (key === 'callback') {
-          return;
-        }
-
-        components.push('--' + key);
-        components.push('"' + escapeCommandValue(value) + '"');
-      });
-      return components.join(' ');
-    }
-
     $scope.table = $routeParams.table;
     $scope.style = 'table';
     $scope.rawData = [];
@@ -57,29 +38,27 @@ angular.module('groongaAdminApp')
       }
       parameters[key] = value;
     });
-    $http.jsonp('/d/select.json', {params: parameters})
-      .success(function(data) {
-        $scope.rawData = data;
-
-        $scope.commandLine = buildCommandLine('select', parameters);
-
-        var response = new GroongaResponse.Select(data);
-        $scope.elapsedTimeInMilliseconds = response.elapsedTime() * 1000;
-        if (!response.isSuccess()) {
-          $scope.message =
-            'Failed to call "select" command: ' + response.errorMessage();
-          $scope.nTotalRecords = 0;
-          return;
-        }
-        $scope.nTotalRecords = response.nTotalRecords();
-        $scope.columns = response.columns();
-        $scope.records = response.records().map(function(record) {
-          return record.map(function(value, index) {
-            return {
-              value: value,
-              column: $scope.columns[index]
-            };
-          });
+    var client = new GroongaClient($http);
+    var request = client.execute('select', parameters);
+    request.success(function(response) {
+      $scope.rawData = response.rawData();
+      $scope.commandLine = request.commandLine();
+      $scope.elapsedTimeInMilliseconds = response.elapsedTime() * 1000;
+      if (!response.isSuccess()) {
+        $scope.message =
+          'Failed to call "select" command: ' + response.errorMessage();
+        $scope.nTotalRecords = 0;
+        return;
+      }
+      $scope.nTotalRecords = response.nTotalRecords();
+      $scope.columns = response.columns();
+      $scope.records = response.records().map(function(record) {
+        return record.map(function(value, index) {
+          return {
+            value: value,
+            column: $scope.columns[index]
+          };
         });
       });
+    });
   });

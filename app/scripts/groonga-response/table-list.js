@@ -6,6 +6,10 @@
   }
   GroongaResponse.TableList = TableList;
 
+  TableList.prototype.rawData = function() {
+    return this._rawData;
+  };
+
   TableList.prototype.header = function() {
     return this._rawData[0];
   };

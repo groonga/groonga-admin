@@ -10,10 +10,9 @@
 angular.module('groongaAdminApp')
   .controller('TopController', function ($scope, $http) {
     $scope.tables = [];
-    $http.jsonp('/d/table_list', {params: {callback: 'JSON_CALLBACK'}})
-      .success(function(data) {
-        var response = new GroongaResponse.TableList(data);
+    var client = new GroongaClient($http);
+    var request = client.execute('table_list', {});
+    request.success(function(response) {
         $scope.tables = response.tables();
-        console.log($scope.tables);
       });
   });
