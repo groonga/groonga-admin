@@ -1,9 +1,9 @@
 'use strict';
 
-window.GroongaResponse = {
+GroongaClient.Response = {
 };
 
-window.GroongaResponse.find = function(name) {
+GroongaClient.Response.find = function(name) {
   var constructorName = name.replace(/(^.|_.)/g, function(matched) {
     if (matched.length === 1) {
       return matched.toUpperCase();
@@ -11,5 +11,5 @@ window.GroongaResponse.find = function(name) {
       return matched[1].toUpperCase();
     }
   });
-  return window.GroongaResponse[constructorName];
+  return this[constructorName];
 };

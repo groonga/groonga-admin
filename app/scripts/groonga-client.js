@@ -60,6 +60,4 @@
     }
     return components.join(' ');
   };
-
-  GroongaClient.Response = GroongaResponse;
 })();

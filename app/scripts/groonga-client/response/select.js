@@ -4,7 +4,7 @@
   function Select(rawData) {
     this._rawData = rawData;
   }
-  GroongaResponse.Select = Select;
+  GroongaClient.Response.Select = Select;
 
   Select.prototype.rawData = function() {
     return this._rawData;

@@ -4,7 +4,7 @@
   function TableList(rawData) {
     this._rawData = rawData;
   }
-  GroongaResponse.TableList = TableList;
+  GroongaClient.Response.TableList = TableList;
 
   TableList.prototype.rawData = function() {
     return this._rawData;
