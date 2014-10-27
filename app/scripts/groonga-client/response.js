@@ -11,5 +11,5 @@ GroongaClient.Response.find = function(name) {
       return matched[1].toUpperCase();
     }
   });
-  return this[constructorName];
+  return this[constructorName] || this.Base;
 };

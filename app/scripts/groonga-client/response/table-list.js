@@ -2,43 +2,12 @@
 
 (function() {
   function TableList(rawData) {
-    this._rawData = rawData;
+    GroongaClient.Response.Base.call(this, rawData);
   }
   GroongaClient.Response.TableList = TableList;
 
-  TableList.prototype.rawData = function() {
-    return this._rawData;
-  };
-
-  TableList.prototype.header = function() {
-    return this._rawData[0];
-  };
-
-  TableList.prototype.status = function() {
-    return this.header()[0];
-  };
-
-  TableList.prototype.isSuccess = function() {
-    return this.status() === 0;
-  };
-
-  TableList.prototype.startTime = function() {
-    var startTime = new Date();
-    startTime.setTime(this.header()[1]);
-    return startTime;
-  };
-
-  TableList.prototype.elapsedTime = function() {
-    return this.header()[2];
-  };
-
-  TableList.prototype.errorMessage = function() {
-    return this.header()[3];
-  };
-
-  TableList.prototype.body = function() {
-    return this._rawData[1];
-  };
+  TableList.prototype = Object.create(GroongaClient.Response.Base.prototype);
+  TableList.prototype.constructor = TableList;
 
   TableList.prototype.parameters = function() {
     return this.body()[0].map(function(parameter) {
