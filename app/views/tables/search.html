@@ -29,14 +29,14 @@
 
   <ul class="nav nav-tabs" role="tablist">
     <li role="tab" data-toggle="tab" class="active">
-      <a ng-click="recordsShowType = 'table'">Table</a>
+      <a ng-click="style = 'table'">Table</a>
     </li>
     <li role="tab" data-toggle="tab">
-      <a ng-click="recordsShowType = 'list'">List</a>
+      <a ng-click="style = 'list'">List</a>
     </li>
   </ul>
 
-  <div class="table-search-result" ng-show="recordsShowType == 'table'">
+  <div class="table-search-result" ng-show="style == 'table'">
     <table>
       <thead>
         <tr>
@@ -55,7 +55,7 @@
     </table>
   </div>
 
-  <div class="list-search-result" ng-show="recordsShowType == 'list'">
+  <div class="list-search-result" ng-show="style == 'list'">
     <div class="row" ng-repeat="record in records track by $index">
       <div class="col-md12">
         <div class="table-responsive">

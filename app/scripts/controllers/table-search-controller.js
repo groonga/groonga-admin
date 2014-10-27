@@ -29,7 +29,7 @@ angular.module('groongaAdminApp')
     }
 
     $scope.table = $routeParams.table;
-    $scope.recordsShowType = 'table';
+    $scope.style = 'table';
     $scope.columns = [];
     $scope.records = [];
     $scope.commandLine = '';
