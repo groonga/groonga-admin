@@ -29,8 +29,7 @@ angular.module('groongaAdminApp')
     };
 
     var parameters = {
-      table: $scope.table,
-      callback: 'JSON_CALLBACK'
+      table: $scope.table
     };
     angular.forEach($scope.parameters, function(value, key) {
       if (key in parameters) {
