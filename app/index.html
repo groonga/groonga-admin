@@ -24,8 +24,6 @@
       <div class="header">
         <ul class="nav nav-pills pull-right">
           <li class="active"><a ng-href="#">Home</a></li>
-          <li><a ng-href="#/about">About</a></li>
-          <li><a ng-href="#">Contact</a></li>
         </ul>
         <h3 class="text-muted">Groonga Admin</h3>
       </div>
@@ -33,7 +31,6 @@
       <div ng-view=""></div>
 
       <div class="footer">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
       </div>
     </div>
 
@@ -73,8 +70,9 @@
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/groonga-response.js"></script>
         <script src="scripts/groonga-response/select.js"></script>
+        <script src="scripts/groonga-response/table-list.js"></script>
         <script src="scripts/app.js"></script>
-        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/top-controller.js"></script>
         <script src="scripts/controllers/table-search-controller.js"></script>
         <!-- endbuild -->
 </body>

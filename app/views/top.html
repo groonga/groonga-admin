@@ -1,0 +1,8 @@
+<div class="container">
+  <h2>Tables</h2>
+  <div class="list-group">
+    <a ng-repeat="table in tables track by $index"
+       class="list-group-item"
+       href="#/tables/{{table.name}}/search">{{table.name}}</a>
+  </div>
+</div>
