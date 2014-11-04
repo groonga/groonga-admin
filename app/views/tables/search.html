@@ -41,6 +41,14 @@
     <span id="elapsed-time">({{elapsedTimeInMilliseconds | number : 3}}ms)</span>
   </p>
 
+  <pagination total-items="nTotalRecords"
+              items-per-page="nRecordsInPage"
+              max-size="maxNPages"
+              rotate="false"
+              ng-model="currentPage"
+              ng-change="search()">
+  </pagination>
+
   <ul class="nav nav-tabs" role="tablist">
     <li role="tab" data-toggle="tab" class="active">
       <a ng-click="style = 'table'">Table</a>
@@ -90,4 +98,12 @@
   </div>
 
   <pre ng-show="style == 'json'">{{rawData | json}}</pre>
+
+  <pagination total-items="nTotalRecords"
+              items-per-page="nRecordsInPage"
+              max-size="maxNPages"
+              rotate="false"
+              ng-model="currentPage"
+              ng-change="search()">
+  </pagination>
 </div>

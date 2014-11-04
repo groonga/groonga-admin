@@ -11,6 +11,10 @@ angular.module('groongaAdminApp')
   .controller('TableSearchController', function ($scope, $routeParams, $location, $http) {
     var client = new GroongaClient($http);
 
+    function computeCurrentPage(offset) {
+      return Math.ceil((parseInt(offset) + 1) / $scope.nRecordsInPage);
+    }
+
     function initialize() {
       $scope.table = $routeParams.table;
       $scope.style = 'table';
@@ -23,7 +27,10 @@ angular.module('groongaAdminApp')
       $scope.message = '';
       $scope.elapsedTimeInMilliseconds = 0;
       $scope.nTotalRecords = 0;
+      $scope.nRecordsInPage = 10;
+      $scope.maxNPages = 10;
       $scope.parameters = angular.copy($location.search());
+      $scope.currentPage = computeCurrentPage($scope.parameters.offset || 0);
 
       $scope.search = search;
       $scope.clear  = clear;
@@ -41,14 +48,11 @@ angular.module('groongaAdminApp')
     }
 
     function search() {
-      var matchColumns = packInUseColumns($scope.indexedColumns);
-      var outputColumns = packInUseColumns($scope.outputColumns);
-      var parameters = angular.extend({},
-                                      $scope.parameters,
-                                      {
-                                        'match_columns':  matchColumns,
-                                        'output_columns': outputColumns
-                                      });
+      var parameters = angular.copy($scope.parameters);
+      parameters.match_columns = packInUseColumns($scope.indexedColumns);
+      parameters.output_columns = packInUseColumns($scope.outputColumns);
+      parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
+      parameters.limit = $scope.nRecordsInPage;
       $location.search(parameters);
     }
 
