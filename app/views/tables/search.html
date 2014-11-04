@@ -18,6 +18,15 @@
         <span class="input-group-addon">Query</span>
         <input type="search" class="form-control" ng-model="parameters.query">
       </div>
+      <div class="input-group">
+        <span ng-repeat="outputColumn in outputColumns track by $index">
+          <label>
+            <input type="checkbox"
+                   ng-model="outputColumn.inUse">
+            {{outputColumn.name}}
+          </label>
+        </span>
+      </div>
     </div>
     <div class="form-group">
       <button ng-click="search()" class="btn btn-default">Search</button>

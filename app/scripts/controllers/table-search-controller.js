@@ -15,6 +15,7 @@ angular.module('groongaAdminApp')
     $scope.columns = [];
     $scope.records = [];
     $scope.indexedColumns = [];
+    $scope.outputColumns = [];
     $scope.commandLine = '';
     $scope.message = '';
     $scope.elapsedTimeInMilliseconds = 0;
@@ -30,10 +31,19 @@ angular.module('groongaAdminApp')
             return indexedColumn.name;
           })
           .join(',');
+      var outputColumns = $scope.outputColumns
+          .filter(function(outputColumn) {
+            return outputColumn.inUse;
+          })
+          .map(function(outputColumn) {
+            return outputColumn.name;
+          })
+          .join(',');
       var parameters = angular.extend({},
                                       $scope.parameters,
                                       {
-                                        'match_columns': matchColumns
+                                        'match_columns':  matchColumns,
+                                        'output_columns': outputColumns
                                       });
       $location.search(parameters);
     };
@@ -66,6 +76,22 @@ angular.module('groongaAdminApp')
                 });
               });
             });
+        });
+      });
+
+    client.execute('column_list', {table: $scope.table})
+      .success(function(response) {
+        var outputColumns = $scope.parameters.output_columns;
+        console.log(response.columns());
+        response.columns().forEach(function(column) {
+          if (column.isIndex) {
+            return;
+          }
+          var inUse = true;
+          if (outputColumns) {
+            inUse = outputColumns.indexOf(column.name) !== -1;
+          }
+          $scope.outputColumns.push({name: column.name, inUse: inUse});
         });
       });
 
