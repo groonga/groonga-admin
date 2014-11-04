@@ -26,11 +26,11 @@ angular.module('groongaAdminApp')
       $scope.commandLine = '';
       $scope.message = '';
       $scope.elapsedTimeInMilliseconds = 0;
+      $scope.currentPage = 1;
       $scope.nTotalRecords = 0;
       $scope.nRecordsInPage = 10;
       $scope.maxNPages = 10;
       $scope.parameters = angular.copy($location.search());
-      $scope.currentPage = computeCurrentPage($scope.parameters.offset || 0);
 
       $scope.search = search;
       $scope.clear  = clear;
@@ -142,6 +142,7 @@ angular.module('groongaAdminApp')
           $scope.nTotalRecords = 0;
           return;
         }
+        $scope.currentPage = computeCurrentPage(parameters.offset || 0);
         $scope.nTotalRecords = response.nTotalRecords();
         $scope.columns = response.columns();
         $scope.records = response.records().map(function(record) {
