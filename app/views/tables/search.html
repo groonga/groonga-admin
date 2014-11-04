@@ -29,118 +29,118 @@
   </div>
 
   <div class="main-content">
-  <div class="alert alert-warning" ng-show="message.length &gt; 0">
-    <p>{{message}}</p>
-  </div>
-  <form role="search">
-    <div class="form-group">
-      <div class="input-group">
-        <span ng-repeat="indexedColumn in indexedColumns track by $index">
-          <label>
-            <input type="checkbox"
-                   ng-model="indexedColumn.inUse">
-            {{indexedColumn.name}}
-          </label>
-        </span>
-      </div>
-      <div class="input-group">
-        <span class="input-group-addon">Query</span>
-        <input type="search" class="form-control" ng-model="parameters.query">
-      </div>
-      <div class="input-group">
-        <span ng-repeat="outputColumn in outputColumns track by $index">
-          <label>
-            <input type="checkbox"
-                   ng-model="outputColumn.inUse">
-            {{outputColumn.name}}
-          </label>
-        </span>
-      </div>
+    <div class="alert alert-warning" ng-show="message.length &gt; 0">
+      <p>{{message}}</p>
     </div>
-    <div class="form-group">
-      <button ng-click="search()" class="btn btn-default">Search</button>
-      <button ng-click="clear()" class="btn btn-default">Clear</button>
+    <form role="search">
+      <div class="form-group">
+        <div class="input-group">
+          <span ng-repeat="indexedColumn in indexedColumns track by $index">
+            <label>
+              <input type="checkbox"
+                     ng-model="indexedColumn.inUse">
+              {{indexedColumn.name}}
+            </label>
+          </span>
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon">Query</span>
+          <input type="search" class="form-control" ng-model="parameters.query">
+        </div>
+        <div class="input-group">
+          <span ng-repeat="outputColumn in outputColumns track by $index">
+            <label>
+              <input type="checkbox"
+                     ng-model="outputColumn.inUse">
+              {{outputColumn.name}}
+            </label>
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <button ng-click="search()" class="btn btn-default">Search</button>
+        <button ng-click="clear()" class="btn btn-default">Clear</button>
+      </div>
+    </form>
+    <p class="command-line">
+      <code id="groonga-command-line">{{commandLine}}</code>
+    </p>
+    <p class="statistics">
+      <span id="n-total-records">{{nTotalRecords}} records</span>
+      <span id="elapsed-time">({{elapsedTimeInMilliseconds | number : 3}}ms)</span>
+    </p>
+
+    <pagination total-items="nTotalRecords"
+                items-per-page="nRecordsInPage"
+                max-size="maxNPages"
+                rotate="false"
+                ng-model="currentPage"
+                ng-change="search()">
+    </pagination>
+
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="tab" data-toggle="tab" class="active">
+        <a ng-click="style = 'table'">Table</a>
+      </li>
+      <li role="tab" data-toggle="tab">
+        <a ng-click="style = 'list'">List</a>
+      </li>
+      <li role="tab" data-toggle="tab">
+        <a ng-click="style = 'json'">JSON</a>
+      </li>
+    </ul>
+
+    <div class="table-search-result" ng-show="style == 'table'">
+      <table>
+        <thead>
+          <tr>
+            <th ng-repeat="column in columns track by $index">
+              {{column.name}}
+              <div>
+                <button type="button"
+                        class="btn btn-default"
+                        ng-click="toggleSort(column)">
+                  <span class="glyphicon {{column.iconClass}}"></span>
+                </button>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="record in records track by $index">
+            <td ng-repeat="element in record track by $index">
+              {{element.value}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </form>
-  <p class="command-line">
-    <code id="groonga-command-line">{{commandLine}}</code>
-  </p>
-  <p class="statistics">
-    <span id="n-total-records">{{nTotalRecords}} records</span>
-    <span id="elapsed-time">({{elapsedTimeInMilliseconds | number : 3}}ms)</span>
-  </p>
 
-  <pagination total-items="nTotalRecords"
-              items-per-page="nRecordsInPage"
-              max-size="maxNPages"
-              rotate="false"
-              ng-model="currentPage"
-              ng-change="search()">
-  </pagination>
-
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="tab" data-toggle="tab" class="active">
-      <a ng-click="style = 'table'">Table</a>
-    </li>
-    <li role="tab" data-toggle="tab">
-      <a ng-click="style = 'list'">List</a>
-    </li>
-    <li role="tab" data-toggle="tab">
-      <a ng-click="style = 'json'">JSON</a>
-    </li>
-  </ul>
-
-  <div class="table-search-result" ng-show="style == 'table'">
-    <table>
-      <thead>
-        <tr>
-          <th ng-repeat="column in columns track by $index">
-            {{column.name}}
-            <div>
-              <button type="button"
-                      class="btn btn-default"
-                      ng-click="toggleSort(column)">
-                <span class="glyphicon {{column.iconClass}}"></span>
-              </button>
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="record in records track by $index">
-          <td ng-repeat="element in record track by $index">
-            {{element.value}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="list-search-result" ng-show="style == 'list'">
-    <div class="row" ng-repeat="record in records track by $index">
-      <div class="col-md12">
-        <div class="table-responsive">
-          <table>
-            <tbody>
-              <tr ng-repeat="item in record track by $index">
-                <th>{{item.column.name}}</th>
-                <td>{{item.value}}</td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="list-search-result" ng-show="style == 'list'">
+      <div class="row" ng-repeat="record in records track by $index">
+        <div class="col-md12">
+          <div class="table-responsive">
+            <table>
+              <tbody>
+                <tr ng-repeat="item in record track by $index">
+                  <th>{{item.column.name}}</th>
+                  <td>{{item.value}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <pre ng-show="style == 'json'">{{rawData | json}}</pre>
+    <pre ng-show="style == 'json'">{{rawData | json}}</pre>
 
-  <pagination total-items="nTotalRecords"
-              items-per-page="nRecordsInPage"
-              max-size="maxNPages"
-              rotate="false"
-              ng-model="currentPage"
-              ng-change="search()">
-  </pagination>
+    <pagination total-items="nTotalRecords"
+                items-per-page="nRecordsInPage"
+                max-size="maxNPages"
+                rotate="false"
+                ng-model="currentPage"
+                ng-change="search()">
+    </pagination>
   </div>
 </div>
