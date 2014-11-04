@@ -57,7 +57,7 @@ angular.module('groongaAdminApp')
       var sortKeys = $scope.columns.filter(function(column) {
         return column.sort;
       }).map(function(column) {
-        if (column.sort == 'ascending') {
+        if (column.sort === 'ascending') {
           return column.name;
         } else {
           return '-' + column.name;
