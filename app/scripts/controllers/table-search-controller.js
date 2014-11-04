@@ -29,7 +29,7 @@ angular.module('groongaAdminApp')
       $scope.clear  = clear;
     }
 
-    function packUsedColumns(columns) {
+    function packInUseColumns(columns) {
       var targetColumnNames = columns
           .filter(function(column) {
             return column.inUse;
