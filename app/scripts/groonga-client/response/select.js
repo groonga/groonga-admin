@@ -25,4 +25,26 @@
   Select.prototype.records = function() {
     return this.body()[0].slice(2);
   };
+
+  Select.prototype.drilldowns = function() {
+    return this.body().slice(1).map(function(drilldown) {
+      var columns = drilldown[1].map(function(rawColumn) {
+        return {
+          name: rawColumn[0],
+          type: rawColumn[1]
+        };
+      });
+      return {
+        nTotalRecords: drilldown[0][0],
+        columns: columns,
+        records: drilldown.slice(2).map(function(rawRecord) {
+          var record = {};
+          columns.forEach(function(column, i) {
+            record[column.name] = rawRecord[i];
+          });
+          return record;
+        })
+      };
+    });
+  };
 })();

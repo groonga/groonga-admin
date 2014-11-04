@@ -21,6 +21,7 @@ angular.module('groongaAdminApp')
       $scope.rawData = [];
       $scope.columns = [];
       $scope.records = [];
+      $scope.drilldowns = [];
       $scope.indexedColumns = [];
       $scope.outputColumns = [];
       $scope.commandLine = '';
@@ -35,6 +36,7 @@ angular.module('groongaAdminApp')
       $scope.search = search;
       $scope.clear  = clear;
       $scope.toggleSort = toggleSort;
+      $scope.selectDrilldown = selectDrilldown;
     }
 
     function packInUseColumns(columns) {
@@ -100,6 +102,22 @@ angular.module('groongaAdminApp')
         break;
       }
       setColumnSort(column, sort);
+      search();
+    }
+
+    function selectDrilldown(key, value) {
+      var query = $scope.parameters.query || '';
+      if (query.length > 0) {
+        query += ' ';
+      }
+      $scope.parameters.query = query + key + ':' + value;
+
+      var drilldowns = ($scope.parameters.drilldown || '').split(/\s*,\s*/);
+      drilldowns = drilldowns.filter(function(drilldown) {
+        return drilldown !== key;
+      });
+      $scope.parameters.drilldown = drilldowns.join(',');
+
       search();
     }
 
@@ -206,6 +224,15 @@ angular.module('groongaAdminApp')
             };
           });
         });
+        $scope.drilldowns = response.drilldowns();
+        ($scope.parameters.drilldown || '')
+          .split(/\s*,\s*/)
+          .filter(function(drilldown) {
+            return drilldown.length > 0;
+          })
+          .forEach(function(drilldown, i) {
+            $scope.drilldowns[i].key = drilldown;
+          });
       });
     }
 

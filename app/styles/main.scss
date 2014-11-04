@@ -3,6 +3,14 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
+.sidebar {
+  @extend .col-md-2;
+}
+
+.main-content {
+  @extend .col-md-10;
+}
+
 .table-search-result {
   @extend .table-responsive;
 

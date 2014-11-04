@@ -5,6 +5,30 @@
     <li><a href="#/tables/{{table}}">{{table}}</a></li>
     <li class="active">Search</li>
   </ol>
+
+  <div class="sidebar">
+    <div class="panel panel-default"
+         ng-repeat="drilldown in drilldowns track by $index">
+      <div class="panel-heading">
+        <h2 class="panel-title">
+          {{drilldown.key}}({{drilldown.nTotalRecords}})
+        </h2>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item"
+              ng-repeat="record in drilldown.records track by $index">
+            <a ng-click="selectDrilldown(drilldown.key, record._key)">
+              {{record._key}}
+            </a>
+            <span class="badge">{{record._nsubrecs}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
   <div class="alert alert-warning" ng-show="message.length &gt; 0">
     <p>{{message}}</p>
   </div>
@@ -118,4 +142,5 @@
               ng-model="currentPage"
               ng-change="search()">
   </pagination>
+  </div>
 </div>
