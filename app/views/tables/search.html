@@ -1,5 +1,10 @@
 <div class="container-fluid" ng-controller="TableSearchController">
-  <h1>Search</h1>
+  <ol class="breadcrumb">
+    <li><a href="#">Top</a></li>
+    <li><a href="#/tables/">Tables</a></li>
+    <li><a href="#/tables/{{table}}">{{table}}</a></li>
+    <li class="active">Search</li>
+  </ol>
   <div class="alert alert-warning" ng-show="message.length &gt; 0">
     <p>{{message}}</p>
   </div>
