@@ -12,7 +12,11 @@
       callback: 'JSON_CALLBACK'
     };
     for (var key in parameters) {
-      params[key] = parameters[key];
+      var value = parameters[key].toString();
+      if (value.length === 0) {
+        continue;
+      }
+      params[key] = value;
     }
     var rawRequest = this._$http.jsonp(this._pathPrefix + name + '.json',
                                        {params: params});
