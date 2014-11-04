@@ -69,20 +69,6 @@ angular.module('groongaAdminApp')
       $scope.outputColumns.push({name: name, inUse: inUse});
     }
 
-    function extractTableInfo(table) {
-      if (table.name === $scope.table) {
-        addOutputColumn('_id');
-        if (table.hasKey) {
-          addOutputColumn('_key');
-        }
-      }
-
-      client.execute('column_list', {table: table.name})
-        .success(function(response) {
-          extractColumnsInfo(table, response.columns());
-        });
-    }
-
     function extractColumnsInfo(table, columns) {
       if (table.name === $scope.table) {
         columns.forEach(function(column) {
@@ -110,6 +96,20 @@ angular.module('groongaAdminApp')
           $scope.indexedColumns.push({name: localName, inUse: inUse});
         });
       });
+    }
+
+    function extractTableInfo(table) {
+      if (table.name === $scope.table) {
+        addOutputColumn('_id');
+        if (table.hasKey) {
+          addOutputColumn('_key');
+        }
+      }
+
+      client.execute('column_list', {table: table.name})
+        .success(function(response) {
+          extractColumnsInfo(table, response.columns());
+        });
     }
 
     function fillOptions() {
