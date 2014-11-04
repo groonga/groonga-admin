@@ -72,6 +72,13 @@
         <tr>
           <th ng-repeat="column in columns track by $index">
             {{column.name}}
+            <div>
+              <button type="button"
+                      class="btn btn-default"
+                      ng-click="toggleSort(column)">
+                <span class="glyphicon {{column.iconClass}}"></span>
+              </button>
+            </div>
           </th>
         </tr>
       </thead>

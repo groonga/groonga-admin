@@ -34,6 +34,7 @@ angular.module('groongaAdminApp')
 
       $scope.search = search;
       $scope.clear  = clear;
+      $scope.toggleSort = toggleSort;
     }
 
     function packInUseColumns(columns) {
@@ -53,11 +54,53 @@ angular.module('groongaAdminApp')
       parameters.output_columns = packInUseColumns($scope.outputColumns);
       parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
       parameters.limit = $scope.nRecordsInPage;
+      var sortKeys = $scope.columns.filter(function(column) {
+        return column.sort;
+      }).map(function(column) {
+        if (column.sort == 'ascending') {
+          return column.name;
+        } else {
+          return '-' + column.name;
+        }
+      }).join(',');
+      parameters.sortby = sortKeys;
       $location.search(parameters);
     }
 
     function clear() {
       $location.search({});
+    }
+
+    function setColumnSort(column, sort) {
+      column.sort = sort;
+      switch (column.sort) {
+      case 'ascending':
+        column.iconClass = 'glyphicon-sort-by-attributes';
+        break;
+      case 'descending':
+        column.iconClass = 'glyphicon-sort-by-attributes-alt';
+        break;
+      default:
+        column.iconClass = 'glyphicon-sort';
+        break;
+      }
+    }
+
+    function toggleSort(column) {
+      var sort;
+      switch (column.sort) {
+      case 'ascending':
+        sort = 'descending';
+        break;
+      case 'descending':
+        sort = null;
+        break;
+      default:
+        sort = 'ascending';
+        break;
+      }
+      setColumnSort(column, sort);
+      search();
     }
 
     function addOutputColumn(name) {
@@ -144,7 +187,17 @@ angular.module('groongaAdminApp')
         }
         $scope.currentPage = computeCurrentPage(parameters.offset || 0);
         $scope.nTotalRecords = response.nTotalRecords();
-        $scope.columns = response.columns();
+        var sortKeys = ($scope.parameters.sortby || '').split(/\s*,\s*/);
+        $scope.columns = response.columns().map(function(column) {
+          var sort = null;
+          if (sortKeys.indexOf(column.name) !== -1) {
+            sort = 'ascending';
+          } else if (sortKeys.indexOf('-' + column.name) !== -1) {
+            sort = 'descending';
+          }
+          setColumnSort(column, sort);
+          return column;
+        });
         $scope.records = response.records().map(function(record) {
           return record.map(function(value, index) {
             return {
