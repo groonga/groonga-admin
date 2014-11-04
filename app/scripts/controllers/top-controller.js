@@ -13,6 +13,6 @@ angular.module('groongaAdminApp')
     var client = new GroongaClient($http);
     var request = client.execute('table_list', {});
     request.success(function(response) {
-        $scope.tables = response.tables();
-      });
+      $scope.tables = response.tables();
+    });
   });
