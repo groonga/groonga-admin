@@ -29,23 +29,20 @@ angular.module('groongaAdminApp')
       $scope.clear  = clear;
     }
 
+    function packUsedColumns(columns) {
+      var targetColumnNames = columns
+          .filter(function(column) {
+            return column.inUse;
+          })
+          .map(function(column) {
+            return column.name;
+          });
+      return targetColumnNames.join(',');
+    }
+
     function search() {
-      var matchColumns = $scope.indexedColumns
-          .filter(function(indexedColumn) {
-            return indexedColumn.inUse;
-          })
-          .map(function(indexedColumn) {
-            return indexedColumn.name;
-          })
-          .join(',');
-      var outputColumns = $scope.outputColumns
-          .filter(function(outputColumn) {
-            return outputColumn.inUse;
-          })
-          .map(function(outputColumn) {
-            return outputColumn.name;
-          })
-          .join(',');
+      var matchColumns = packInUseColumns($scope.indexedColumns);
+      var outputColumns = packInUseColumns($scope.outputColumns);
       var parameters = angular.extend({},
                                       $scope.parameters,
                                       {
