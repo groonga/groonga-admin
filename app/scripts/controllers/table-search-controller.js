@@ -56,46 +56,59 @@ angular.module('groongaAdminApp')
       $location.search({});
     }
 
+    function extractTableInfo(table) {
+      if (table.name === $scope.table) {
+        $scope.outputColumns.push({name: '_id', inUse: true});
+        if (table.hasKey) {
+          $scope.outputColumns.push({name: '_key', inUse: true});
+        }
+      }
+
+      client.execute('column_list', {table: table.name})
+        .success(function(response) {
+          extractColumnsInfo(table, response.columns());
+        });
+    }
+
+    function extractColumnsInfo(table, columns) {
+      if (table.name === $scope.table) {
+        var outputColumns = $scope.parameters.output_columns;
+        columns.forEach(function(column) {
+          if (column.isIndex) {
+            return;
+          }
+          var inUse = true;
+          if (outputColumns) {
+            inUse = outputColumns.indexOf(column.name) !== -1;
+          }
+          $scope.outputColumns.push({name: column.name, inUse: inUse});
+        });
+      }
+
+      columns.forEach(function(column) {
+        if (!column.isIndex) {
+          return;
+        }
+        if (column.range !== $scope.table) {
+          return;
+        }
+        var matchColumns = $scope.parameters.match_columns;
+        column.sources.forEach(function(source) {
+          var localName = source.split('.')[1];
+          var inUse = true;
+          if (matchColumns) {
+            inUse = matchColumns.indexOf(localName) !== -1;
+          }
+          $scope.indexedColumns.push({name: localName, inUse: inUse});
+        });
+      });
+    }
+
     function fillOptions() {
       client.execute('table_list')
         .success(function(response) {
           response.tables().forEach(function(table) {
-            client.execute('column_list', {table: table.name})
-            .success(function(response) {
-              response.columns().forEach(function(column) {
-                if (!column.isIndex) {
-                  return;
-                }
-                if (column.range !== $scope.table) {
-                  return;
-                }
-                var matchColumns = $scope.parameters.match_columns;
-                column.sources.forEach(function(source) {
-                  var localName = source.split('.')[1];
-                  var inUse = true;
-                  if (matchColumns) {
-                      inUse = matchColumns.indexOf(localName) !== -1;
-                  }
-                  $scope.indexedColumns.push({name: localName, inUse: inUse});
-                });
-              });
-            });
-          });
-        });
-
-      client.execute('column_list', {table: $scope.table})
-        .success(function(response) {
-          var outputColumns = $scope.parameters.output_columns;
-          console.log(response.columns());
-          response.columns().forEach(function(column) {
-            if (column.isIndex) {
-              return;
-            }
-            var inUse = true;
-            if (outputColumns) {
-              inUse = outputColumns.indexOf(column.name) !== -1;
-            }
-            $scope.outputColumns.push({name: column.name, inUse: inUse});
+            extractTableInfo(table);
           });
         });
     }
