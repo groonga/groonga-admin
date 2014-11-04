@@ -22,15 +22,19 @@ angular.module('groongaAdminApp')
     $scope.parameters = angular.copy($location.search());
 
     $scope.search = function() {
-      var parameters = angular.copy($scope.parameters);
-      parameters.match_columns = $scope.indexedColumns
-        .filter(function(indexedColumn) {
-          return indexedColumn.inUse;
-        })
-        .map(function(indexedColumn) {
-          return indexedColumn.name;
-        })
-        .join(',');
+      var matchColumns = $scope.indexedColumns
+          .filter(function(indexedColumn) {
+            return indexedColumn.inUse;
+          })
+          .map(function(indexedColumn) {
+            return indexedColumn.name;
+          })
+          .join(',');
+      var parameters = angular.extend({},
+                                      $scope.parameters,
+                                      {
+                                        'match_columns': matchColumns
+                                      });
       $location.search(parameters);
     };
 
