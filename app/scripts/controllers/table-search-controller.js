@@ -55,10 +55,13 @@ angular.module('groongaAdminApp')
                 if (column.range !== $scope.table) {
                   return;
                 }
-                var matchColumns = $scope.parameters['match_columns'] || [];
+                var matchColumns = $scope.parameters.match_columns;
                 column.sources.forEach(function(source) {
                   var localName = source.split('.')[1];
-                  var inUse = matchColumns.indexOf(localName) !== -1;
+                  var inUse = true;
+                  if (matchColumns) {
+                      inUse = matchColumns.indexOf(localName) !== -1;
+                  }
                   $scope.indexedColumns.push({name: localName, inUse: inUse});
                 });
               });
