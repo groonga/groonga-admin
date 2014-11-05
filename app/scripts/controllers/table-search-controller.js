@@ -162,9 +162,6 @@ angular.module('groongaAdminApp')
     function extractTableInfo(table) {
       if (table.name === $scope.table) {
         addOutputColumn('_id');
-        if (table.hasKey) {
-          addOutputColumn('_key');
-        }
       }
 
       client.execute('column_list', {table: table.name})
