@@ -149,7 +149,12 @@ angular.module('groongaAdminApp')
         }
         var matchColumns = $scope.parameters.match_columns;
         column.sources.forEach(function(source) {
-          var localName = source.split('.')[1];
+          var localName;
+          if (source.indexOf('.') === -1) {
+            localName = '_key';
+          } else {
+            localName = source.split('.')[1];
+          }
           var inUse = true;
           if (matchColumns) {
             inUse = matchColumns.indexOf(localName) !== -1;
