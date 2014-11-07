@@ -5,6 +5,18 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 
 .sidebar {
   @extend .col-md-2;
+
+  .table-columns {
+    @extend .table-responsive;
+
+    table {
+      @extend .table;
+      @extend .table-striped;
+      @extend .table-bordered;
+      @extend .table-hover;
+      @extend .table-condensed;
+    }
+  }
 }
 
 .main-content {
