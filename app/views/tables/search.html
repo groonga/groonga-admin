@@ -13,6 +13,9 @@
           <tr>
             <th>Name</th>
             <th>Output</th>
+            <th>
+              <span title="Drilldown" class="glyphicon glyphicon-filter"></span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -20,6 +23,8 @@
             <td>{{outputColumn.name}}</td>
             <td><input type="checkbox"
                        ng-model="outputColumn.inUse"></td>
+            <td><input type="checkbox"
+                       ng-model="outputColumn.drilldown"></td>
           </tr>
         </tbody>
       </table>

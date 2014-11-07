@@ -127,7 +127,12 @@ angular.module('groongaAdminApp')
       if (outputColumns) {
         inUse = outputColumns.indexOf(name) !== -1;
       }
-      $scope.outputColumns.push({name: name, inUse: inUse});
+      var drilldown = false;
+      $scope.outputColumns.push({
+        name: name,
+        inUse: inUse,
+        drilldown: drilldown
+      });
     }
 
     function extractColumnsInfo(table, columns) {
@@ -159,7 +164,12 @@ angular.module('groongaAdminApp')
           if (matchColumns) {
             inUse = matchColumns.indexOf(localName) !== -1;
           }
-          $scope.indexedColumns.push({name: localName, inUse: inUse});
+          var drilldown = false;
+          $scope.indexedColumns.push({
+            name: localName,
+            inUse: inUse,
+            drilldown: drilldown
+          });
         });
       });
     }
