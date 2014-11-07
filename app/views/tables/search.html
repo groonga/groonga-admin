@@ -42,7 +42,7 @@
     </div>
 
     <div class="panel panel-default"
-         ng-repeat="drilldown in drilldowns track by $index">
+         ng-repeat="drilldown in response.drilldowns track by $index">
       <div class="panel-heading">
         <h2 class="panel-title">
           {{drilldown.key}}({{drilldown.nTotalRecords}})
@@ -91,11 +91,13 @@
       <code id="groonga-command-line">{{commandLine}}</code>
     </p>
     <p class="statistics">
-      <span id="n-total-records">{{nTotalRecords}} records</span>
-      <span id="elapsed-time">({{elapsedTimeInMilliseconds | number : 3}}ms)</span>
+      <span id="n-total-records">{{response.nTotalRecords}} records</span>
+      <span id="elapsed-time">
+        ({{response.elapsedTimeInMilliseconds | number : 3}}ms)
+      </span>
     </p>
 
-    <pagination total-items="nTotalRecords"
+    <pagination total-items="response.nTotalRecords"
                 items-per-page="nRecordsInPage"
                 max-size="maxNPages"
                 rotate="false"
@@ -119,7 +121,7 @@
       <table>
         <thead>
           <tr>
-            <th ng-repeat="column in columns track by $index">
+            <th ng-repeat="column in response.columns track by $index">
               {{column.name}}
               <div>
                 <button type="button"
@@ -132,7 +134,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="record in records track by $index">
+          <tr ng-repeat="record in response.records track by $index">
             <td ng-repeat="element in record track by $index">
               {{element.value}}
             </td>
@@ -142,7 +144,7 @@
     </div>
 
     <div class="list-search-result" ng-show="style == 'list'">
-      <div class="row" ng-repeat="record in records track by $index">
+      <div class="row" ng-repeat="record in response.records track by $index">
         <div class="col-md12">
           <div class="table-responsive">
             <table>
@@ -158,9 +160,9 @@
       </div>
     </div>
 
-    <pre ng-show="style == 'json'">{{rawData | json}}</pre>
+    <pre ng-show="style == 'json'">{{response.rawData | json}}</pre>
 
-    <pagination total-items="nTotalRecords"
+    <pagination total-items="response.nTotalRecords"
                 items-per-page="nRecordsInPage"
                 max-size="maxNPages"
                 rotate="false"

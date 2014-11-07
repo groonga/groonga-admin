@@ -18,17 +18,19 @@ angular.module('groongaAdminApp')
     function initialize() {
       $scope.table = $routeParams.table;
       $scope.style = 'table';
-      $scope.rawData = [];
-      $scope.columns = [];
-      $scope.records = [];
-      $scope.drilldowns = [];
+      $scope.response = {
+        rawData: [],
+        columns: [],
+        records: [],
+        drilldowns: [],
+        elapsedTimeInMilliseconds: 0,
+        nTotalRecords: 0
+      };
       $scope.indexedColumns = [];
       $scope.outputColumns = [];
       $scope.commandLine = '';
       $scope.message = '';
-      $scope.elapsedTimeInMilliseconds = 0;
       $scope.currentPage = 1;
-      $scope.nTotalRecords = 0;
       $scope.nRecordsInPage = 10;
       $scope.maxNPages = 10;
       $scope.parameters = angular.copy($location.search());
@@ -206,19 +208,20 @@ angular.module('groongaAdminApp')
       });
       var request = client.execute('select', parameters);
       request.success(function(response) {
-        $scope.rawData = response.rawData();
+        $scope.response.rawData = response.rawData();
         $scope.commandLine = request.commandLine();
-        $scope.elapsedTimeInMilliseconds = response.elapsedTime() * 1000;
+        $scope.response.elapsedTimeInMilliseconds =
+          response.elapsedTime() * 1000;
         if (!response.isSuccess()) {
           $scope.message =
             'Failed to call "select" command: ' + response.errorMessage();
-          $scope.nTotalRecords = 0;
+          $scope.response.nTotalRecords = 0;
           return;
         }
         $scope.currentPage = computeCurrentPage(parameters.offset || 0);
-        $scope.nTotalRecords = response.nTotalRecords();
+        $scope.response.nTotalRecords = response.nTotalRecords();
         var sortKeys = ($scope.parameters.sortby || '').split(/\s*,\s*/);
-        $scope.columns = response.columns().map(function(column) {
+        $scope.response.columns = response.columns().map(function(column) {
           var sort = null;
           if (sortKeys.indexOf(column.name) !== -1) {
             sort = 'ascending';
@@ -228,22 +231,22 @@ angular.module('groongaAdminApp')
           setColumnSort(column, sort);
           return column;
         });
-        $scope.records = response.records().map(function(record) {
+        $scope.response.records = response.records().map(function(record) {
           return record.map(function(value, index) {
             return {
               value: value,
-              column: $scope.columns[index]
+              column: $scope.response.columns[index]
             };
           });
         });
-        $scope.drilldowns = response.drilldowns();
+        $scope.response.drilldowns = response.drilldowns();
         ($scope.parameters.drilldown || '')
           .split(/\s*,\s*/)
           .filter(function(drilldown) {
             return drilldown.length > 0;
           })
           .forEach(function(drilldown, i) {
-            $scope.drilldowns[i].key = drilldown;
+            $scope.response.drilldowns[i].key = drilldown;
           });
       });
     }
