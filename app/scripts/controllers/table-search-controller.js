@@ -48,6 +48,17 @@ angular.module('groongaAdminApp')
       return names.join(',');
     }
 
+    function packSortColumns(columns) {
+      var keys = columns.map(function(column) {
+        if (column.sort === 'ascending') {
+          return column.name;
+        } else {
+          return '-' + column.name;
+        }
+      });
+      keys.join(',');
+    }
+
     function search() {
       var parameters = angular.copy($scope.parameters);
 
@@ -64,16 +75,10 @@ angular.module('groongaAdminApp')
       parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
       parameters.limit = $scope.nRecordsInPage;
 
-      var sortKeys = $scope.columns.filter(function(column) {
+      var sortColumns = $scope.columns.filter(function(column) {
         return column.sort;
-      }).map(function(column) {
-        if (column.sort === 'ascending') {
-          return column.name;
-        } else {
-          return '-' + column.name;
-        }
-      }).join(',');
-      parameters.sortby = sortKeys;
+      });
+      parameters.sortby = packSortColumns(sortColumns);
 
       $location.search(parameters);
     }
