@@ -27,7 +27,7 @@ angular.module('groongaAdminApp')
         nTotalRecords: 0
       };
       $scope.indexedColumns = [];
-      $scope.outputColumns = [];
+      $scope.allColumns = [];
       $scope.commandLine = '';
       $scope.message = '';
       $scope.currentPage = 1;
@@ -55,7 +55,7 @@ angular.module('groongaAdminApp')
     function search() {
       var parameters = angular.copy($scope.parameters);
       parameters.match_columns = packInUseColumns($scope.indexedColumns);
-      parameters.output_columns = packInUseColumns($scope.outputColumns);
+      parameters.output_columns = packInUseColumns($scope.allColumns);
       parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
       parameters.limit = $scope.nRecordsInPage;
       var sortKeys = $scope.columns.filter(function(column) {
@@ -123,18 +123,18 @@ angular.module('groongaAdminApp')
       search();
     }
 
-    function addOutputColumn(name) {
+    function createColumnInfo(name) {
       var outputColumns = $scope.parameters.output_columns;
       var inUse = true;
       if (outputColumns) {
         inUse = outputColumns.indexOf(name) !== -1;
       }
       var drilldown = false;
-      $scope.outputColumns.push({
+      return {
         name: name,
         inUse: inUse,
         drilldown: drilldown
-      });
+      };
     }
 
     function extractColumnsInfo(table, columns) {
@@ -143,7 +143,7 @@ angular.module('groongaAdminApp')
           if (column.isIndex) {
             return;
           }
-          addOutputColumn(column.name);
+          $scope.allColumns.push(createColumnInfo(column.name));
         });
       }
 
@@ -178,7 +178,7 @@ angular.module('groongaAdminApp')
 
     function extractTableInfo(table) {
       if (table.name === $scope.table) {
-        addOutputColumn('_id');
+        $scope.allColumns.push(createColumnInfo('_id'));
       }
 
       client.execute('column_list', {table: table.name})

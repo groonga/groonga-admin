@@ -28,12 +28,12 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="outputColumn in outputColumns track by $index">
-                <td>{{outputColumn.name}}</td>
+              <tr ng-repeat="column in allColumns track by $index">
+                <td>{{column.name}}</td>
                 <td><input type="checkbox"
-                           ng-model="outputColumn.inUse"></td>
+                           ng-model="column.inUse"></td>
                 <td><input type="checkbox"
-                           ng-model="outputColumn.drilldown"></td>
+                           ng-model="column.drilldown"></td>
               </tr>
             </tbody>
           </table>
