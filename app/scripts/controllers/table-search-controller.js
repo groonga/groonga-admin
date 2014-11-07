@@ -41,11 +41,9 @@ angular.module('groongaAdminApp')
       $scope.selectDrilldown = selectDrilldown;
     }
 
-    function packInUseColumns(columns) {
+    function packColumns(columns, filterFunction) {
       var targetColumnNames = columns
-          .filter(function(column) {
-            return column.inUse;
-          })
+          .filter(filterFunction)
           .map(function(column) {
             return column.name;
           });
@@ -54,8 +52,14 @@ angular.module('groongaAdminApp')
 
     function search() {
       var parameters = angular.copy($scope.parameters);
-      parameters.match_columns = packInUseColumns($scope.indexedColumns);
-      parameters.output_columns = packInUseColumns($scope.allColumns);
+      parameters.match_columns =
+        packColumns($scope.indexedColumns, function(column) {
+          return column.inUse;
+        });
+      parameters.output_columns =
+        packInUseColumns($scope.allColumns, function(column) {
+          return column.inUse;
+        });
       parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
       parameters.limit = $scope.nRecordsInPage;
       var sortKeys = $scope.columns.filter(function(column) {
