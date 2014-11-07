@@ -42,10 +42,10 @@ angular.module('groongaAdminApp')
     }
 
     function packColumns(columns) {
-      var targetColumnNames = columns.map(function(column) {
+      var names = columns.map(function(column) {
         return column.name;
       });
-      return targetColumnNames.join(',');
+      return names.join(',');
     }
 
     function search() {
