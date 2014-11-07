@@ -39,10 +39,10 @@ angular.module('groongaAdminApp')
       $scope.selectDrilldown = selectDrilldown;
     }
 
-    function packInUseColumns(columns) {
+    function packShowColumns(columns) {
       var targetColumnNames = columns
           .filter(function(column) {
-            return column.inUse;
+            return column.show;
           })
           .map(function(column) {
             return column.name;
@@ -52,8 +52,8 @@ angular.module('groongaAdminApp')
 
     function search() {
       var parameters = angular.copy($scope.parameters);
-      parameters.match_columns = packInUseColumns($scope.indexedColumns);
-      parameters.output_columns = packInUseColumns($scope.outputColumns);
+      parameters.match_columns = packShowColumns($scope.indexedColumns);
+      parameters.output_columns = packShowColumns($scope.outputColumns);
       parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
       parameters.limit = $scope.nRecordsInPage;
       var sortKeys = $scope.columns.filter(function(column) {
@@ -123,14 +123,14 @@ angular.module('groongaAdminApp')
 
     function addOutputColumn(name) {
       var outputColumns = $scope.parameters.output_columns;
-      var inUse = true;
+      var show = true;
       if (outputColumns) {
-        inUse = outputColumns.indexOf(name) !== -1;
+        show = outputColumns.indexOf(name) !== -1;
       }
       var drilldown = false;
       $scope.outputColumns.push({
         name: name,
-        inUse: inUse,
+        show: show,
         drilldown: drilldown
       });
     }
@@ -160,14 +160,14 @@ angular.module('groongaAdminApp')
           } else {
             localName = source.split('.')[1];
           }
-          var inUse = true;
+          var show = true;
           if (matchColumns) {
-            inUse = matchColumns.indexOf(localName) !== -1;
+            show = matchColumns.indexOf(localName) !== -1;
           }
           var drilldown = false;
           $scope.indexedColumns.push({
             name: localName,
-            inUse: inUse,
+            show: show,
             drilldown: drilldown
           });
         });
