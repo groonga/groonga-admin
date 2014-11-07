@@ -41,25 +41,23 @@ angular.module('groongaAdminApp')
       $scope.selectDrilldown = selectDrilldown;
     }
 
-    function packColumns(columns, filterFunction) {
-      var targetColumnNames = columns
-          .filter(filterFunction)
-          .map(function(column) {
-            return column.name;
-          });
+    function packColumns(columns) {
+      var targetColumnNames = columns.map(function(column) {
+        return column.name;
+      });
       return targetColumnNames.join(',');
     }
 
     function search() {
       var parameters = angular.copy($scope.parameters);
       parameters.match_columns =
-        packColumns($scope.indexedColumns, function(column) {
+        packColumns($scope.indexedColumns.filter(function(column) {
           return column.inUse;
-        });
+        }));
       parameters.output_columns =
-        packColumns($scope.allColumns, function(column) {
+        packColumns($scope.allColumns.filter(function(column) {
           return column.output;
-        });
+        }));
       parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
       parameters.limit = $scope.nRecordsInPage;
       var sortKeys = $scope.columns.filter(function(column) {
