@@ -80,6 +80,13 @@ angular.module('groongaAdminApp')
       });
       parameters.sortby = packSortColumns(sortColumns);
 
+      var drilldowns = $scope.allColumns.filter(function(column) {
+        return column.drilldown;
+      });
+      parameters.drilldown = packColumns(drilldowns);
+
+      parameters.drilldown_sortby = '-_nsubrecs';
+
       $location.search(parameters);
     }
 
@@ -136,12 +143,20 @@ angular.module('groongaAdminApp')
     }
 
     function createColumnInfo(name) {
-      var outputColumns = $scope.parameters.output_columns;
       var output = true;
+      var outputColumns = $scope.parameters.output_columns;
       if (outputColumns) {
+        outputColumns = outputColumns.split(/\s*,\s*/);
         output = outputColumns.indexOf(name) !== -1;
       }
+
       var drilldown = false;
+      var drilldowns = $scope.parameters.drilldown;
+      if (drilldowns) {
+        drilldowns = drilldowns.split(/\s*,\s*/);
+        drilldown = drilldowns.indexOf(name) !== -1;
+      }
+
       return {
         name: name,
         output: output,
