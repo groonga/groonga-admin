@@ -8,7 +8,9 @@
  * Controller of the groongaAdminApp
  */
 angular.module('groongaAdminApp')
-  .controller('TableSearchController', function ($scope, $routeParams, $location, $http, $filter) {
+  .controller('TableSearchController', [
+    '$scope', '$routeParams', '$location', '$http', '$filter',
+    function ($scope, $routeParams, $location, $http, $filter) {
     var client = new GroongaClient($http);
 
     function computeCurrentPage(offset) {
@@ -312,4 +314,4 @@ angular.module('groongaAdminApp')
     initialize();
     fillOptions();
     select();
-  });
+  }]);
