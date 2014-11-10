@@ -87,9 +87,6 @@
         <button ng-click="clear()" class="btn btn-default">Clear</button>
       </div>
     </form>
-    <p class="command-line">
-      <code id="groonga-command-line">{{commandLine}}</code>
-    </p>
     <p class="statistics">
       <span id="n-total-records">{{response.nTotalRecords}} records</span>
       <span id="elapsed-time">
@@ -113,7 +110,7 @@
         <a ng-click="style = 'list'">List</a>
       </li>
       <li role="tab" data-toggle="tab">
-        <a ng-click="style = 'json'">JSON</a>
+        <a ng-click="style = 'raw'">Raw</a>
       </li>
     </ul>
 
@@ -160,7 +157,10 @@
       </div>
     </div>
 
-    <pre ng-show="style == 'json'">{{response.rawData | json}}</pre>
+    <div ng-show="style == 'raw'">
+      <pre><code id="groonga-command-line">{{commandLine}}</code></pre>
+      <pre><code id="groonga-response">{{response.rawData | json}}</code></pre>
+    </div>
 
     <pagination total-items="response.nTotalRecords"
                 items-per-page="nRecordsInPage"
