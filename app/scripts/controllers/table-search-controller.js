@@ -75,7 +75,7 @@ angular.module('groongaAdminApp')
       parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
       parameters.limit = $scope.nRecordsInPage;
 
-      var sortColumns = $scope.columns.filter(function(column) {
+      var sortColumns = $scope.response.columns.filter(function(column) {
         return column.sort;
       });
       parameters.sortby = packSortColumns(sortColumns);
