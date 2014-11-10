@@ -48,7 +48,7 @@
   GroongaClient.Request.prototype.commandLine = function() {
     function escapeCommandValue(value) {
       return value.toString().replace(/(["\\])/g, function(match) {
-        return '\\' + match[1];
+        return '\\' + match;
       });
     }
 
