@@ -57,7 +57,7 @@ angular.module('groongaAdminApp')
           return '-' + column.name;
         }
       });
-      keys.join(',');
+      return keys.join(',');
     }
 
     function search() {
