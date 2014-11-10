@@ -133,7 +133,7 @@
         <tbody>
           <tr ng-repeat="record in response.records track by $index">
             <td ng-repeat="element in record track by $index">
-              {{element.value}}
+              {{element.formattedValue}}
             </td>
           </tr>
         </tbody>
@@ -148,7 +148,7 @@
               <tbody>
                 <tr ng-repeat="item in record track by $index">
                   <th>{{item.column.name}}</th>
-                  <td>{{item.value}}</td>
+                  <td>{{item.formattedValue}}</td>
                 </tr>
               </tbody>
             </table>

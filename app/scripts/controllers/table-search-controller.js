@@ -8,7 +8,7 @@
  * Controller of the groongaAdminApp
  */
 angular.module('groongaAdminApp')
-  .controller('TableSearchController', function ($scope, $routeParams, $location, $http) {
+  .controller('TableSearchController', function ($scope, $routeParams, $location, $http, $filter) {
     var client = new GroongaClient($http);
 
     function computeCurrentPage(offset) {
@@ -282,9 +282,18 @@ angular.module('groongaAdminApp')
         });
         $scope.response.records = response.records().map(function(record) {
           return record.map(function(value, index) {
+            var column = $scope.response.columns[index];
+            var formattedValue;
+            if (column.type === 'Time') {
+              var iso8601Format = 'yyyy-MM-ddTHH:mm:ss.sssZ';
+              formattedValue = $filter('date')(value * 1000, iso8601Format);
+            } else {
+              formattedValue = value;
+            }
             return {
               value: value,
-              column: $scope.response.columns[index]
+              formattedValue: formattedValue,
+              column: column
             };
           });
         });
