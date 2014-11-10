@@ -226,7 +226,7 @@ angular.module('groongaAdminApp')
         if (table.name === $scope.table) {
           var idColumn = {
             name: '_id',
-            range: "UInt32"
+            range: 'UInt32'
           };
           $scope.allColumns.push(createColumnInfo(idColumn));
         }
