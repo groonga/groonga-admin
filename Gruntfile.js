@@ -513,7 +513,7 @@ module.exports = function (grunt) {
                'packages@packages.groonga.org:public/source/groonga-admin/')
   });
 
-  grunt.registerTask('package', 'Create archive and upload it', [
+  grunt.registerTask('release:package', 'Release archived package', [
     'build',
     'clean:archive',
     'copy:archive',
