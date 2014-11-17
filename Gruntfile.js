@@ -394,6 +394,16 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
+    },
+
+    // Release settings
+    release: {
+      options: {
+        bump: false,
+        add: false,
+        commit: false,
+        npm: false
+      }
     }
   });
 
