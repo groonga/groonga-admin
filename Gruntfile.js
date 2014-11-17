@@ -1,6 +1,8 @@
 // Generated on 2014-10-21 using generator-angular 0.9.8
 'use strict';
 
+var shell = require('shelljs');
+
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
@@ -15,10 +17,14 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  var pkg = grunt.file.readJSON('package.json');
+  var archiveBaseName = pkg.name + '-' + pkg.version;
+
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
-    dist: 'dist'
+    dist: 'dist',
+    archive: archiveBaseName
   };
 
   // Define the configuration for all the tasks
@@ -152,7 +158,8 @@ module.exports = function (grunt) {
           ]
         }]
       },
-      server: '.tmp'
+      server: '.tmp',
+      archive: '<%= yeoman.archive %>'
     },
 
     // Add vendor prefixed styles
@@ -370,6 +377,42 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      },
+      archive: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '<%= yeoman.dist %>',
+          dest: '<%= yeoman.archive %>/html',
+          src: [
+            '*'
+          ]
+        }, {
+          expand: true,
+          dot: true,
+          cwd: '.',
+          dest: '<%= yeoman.archive %>',
+          src: [
+            'LICENSE',
+            'README.md',
+            'doc/**/*'
+          ]
+        }, {
+          expand: true,
+          dot: true,
+          cwd: '.',
+          dest: '<%= yeoman.archive %>/source',
+          src: [
+            '.bowerrc',
+            '.jshintrc',
+            'Gruntfile.js',
+            'bower.json',
+            'package.json',
+            '<%= yeoman.app %>/**/*',
+            '!<%= yeoman.app %>/styles/*.css',
+            '!<%= yeoman.app %>/styles/.sass-cache/'
+          ]
+        }]
       }
     },
 
@@ -458,5 +501,17 @@ module.exports = function (grunt) {
     'newer:jshint',
     'test',
     'build'
+  ]);
+
+  grunt.registerTask('archive', 'Archive distributed files', function (target) {
+    shell.exec('tar cvzf ' + archiveBaseName + '.tar.gz ' + archiveBaseName);
+  });
+
+  grunt.registerTask('package', 'Create package', [
+    'build',
+    'clean:archive',
+    'copy:archive',
+    'archive',
+    'clean:archive'
   ]);
 };
