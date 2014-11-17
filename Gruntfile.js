@@ -503,11 +503,11 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.registerTask('archive', 'Archive distributed files', function (target) {
+  grunt.registerTask('archive', 'Archive distributed files', function () {
     shell.exec('tar cvzf ' + archiveBaseName + '.tar.gz ' + archiveBaseName);
   });
 
-  grunt.registerTask('archive:upload', 'Upload archive', function (target) {
+  grunt.registerTask('archive:upload', 'Upload archive', function () {
     shell.exec('scp ' +
                archiveBaseName + '.tar.gz ' +
                'packages@packages.groonga.org:public/source/groonga-admin/');
