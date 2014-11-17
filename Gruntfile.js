@@ -507,11 +507,18 @@ module.exports = function (grunt) {
     shell.exec('tar cvzf ' + archiveBaseName + '.tar.gz ' + archiveBaseName);
   });
 
-  grunt.registerTask('package', 'Create package', [
+  grunt.registerTask('archive:upload', 'Upload archive', function (target) {
+    shell.exec('scp ' +
+               archiveBaseName + '.tar.gz ' +
+               'packages@packages.groonga.org:public/source/groonga-admin/')
+  });
+
+  grunt.registerTask('package', 'Create archive and upload it', [
     'build',
     'clean:archive',
     'copy:archive',
     'archive',
-    'clean:archive'
+    'clean:archive',
+    'archive:upload',
   ]);
 };
