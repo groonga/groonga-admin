@@ -135,6 +135,17 @@ angular.module('groongaAdminApp')
         });
       }
 
+      function isTextType(type) {
+        switch (type) {
+        case 'ShortText':
+        case 'Text':
+        case 'LongText':
+          return true;
+        default:
+          return false;
+        }
+      }
+
       function selectDrilldown(key, value) {
         var queryKey = key;
         var column = $scope.allColumns.find(function(column) {
@@ -218,8 +229,21 @@ angular.module('groongaAdminApp')
             var sourceColumn = $scope.allColumns.find(function(column) {
               return column.name === localName;
             });
-            if (sourceColumn && isTableType(sourceColumn.type)) {
-              indexName += '._key';
+            if (sourceColumn) {
+              var targetType = sourceColumn.type;
+              if (isTableType(targetType)) {
+                var table = $scope.allTables.find(function(table) {
+                  return table.name === targetType;
+                });
+                targetType = table.domain;
+              }
+              if (!isTextType(targetType)) {
+                return;
+              }
+
+              if (isTableType(targetType)) {
+                indexName += '._key';
+              }
             }
 
             var inUse = true;
