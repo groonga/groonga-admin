@@ -8,7 +8,30 @@ just publish Groonga Admin by HTTP server provided by Groonga.
 
 ## Install
 
-TODO
+Download the latest archive from http://packages.groonga.org/source/groonga-admin/ .
+
+Extract the archive. Then you get `groonga-X.Y.Z/` directory and find `groonga-X.Y.Z/html/` directory.
+
+Mount the `html/` directory in your Groonga HTTP server.
+
+For
+[groonga-server-http](http://groonga.org/docs/server/package.html#groonga-server-http),
+add the following line to your `/etc/groonga/groonga.conf`:
+
+    admin-html-path = /PATH/TO/groonga-admin-X.Y.Z/html
+
+Then restart your groonga-server-http and access to http://localhost:10041/ .
+
+For
+[groonga-httpd](http://groonga.org/docs/server/package.html#groonga-httpd),
+use the following configuration in your `groonga-httpd.conf`:
+
+    location / {
+      root /PATH/TO/groonga-admin-X.Y.Z/html;
+      index index.html;
+    }
+
+Then restart your groonga-httpd and access to http://localhost:10041/ .
 
 ## For developers
 
