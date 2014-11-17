@@ -1,8 +1,11 @@
 {
   "name": "groonga-admin",
   "license": "LGPL-2.1+",
+  "main": "app/scripts/app.js",
   "keywords": [
     "groonga"
+  ],
+  "ignore": [
   ],
   "authors": [
     {
