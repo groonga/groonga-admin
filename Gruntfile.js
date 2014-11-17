@@ -510,7 +510,7 @@ module.exports = function (grunt) {
   grunt.registerTask('archive:upload', 'Upload archive', function (target) {
     shell.exec('scp ' +
                archiveBaseName + '.tar.gz ' +
-               'packages@packages.groonga.org:public/source/groonga-admin/')
+               'packages@packages.groonga.org:public/source/groonga-admin/');
   });
 
   grunt.registerTask('release:package', 'Release archived package', [
