@@ -263,30 +263,30 @@ angular.module('groongaAdminApp')
           .success(function(response) {
             $scope.allTables = response.tables();
 
-            var currentTable = $scope.allTables.find(function(table) {
-              return table.name === $scope.table;
-            });
             var idColumn = {
               name: '_id',
               range: 'UInt32'
             };
             $scope.allColumns.push(createColumnInfo(idColumn));
 
-            client.execute('column_list', {table: currentTable.name})
+            client.execute('column_list', {table: $scope.table})
               .success(function(response) {
-                if (currentTable.name === $scope.table) {
-                  response.columns().forEach(function(column) {
-                    if (column.isIndex) {
-                      return;
-                    }
-                    $scope.allColumns.push(createColumnInfo(column));
-                  });
-                }
+                var columns = response.columns();
 
-                extractColumnsInfo(currentTable, response.columns());
+                columns.forEach(function(column) {
+                  if (column.isIndex) {
+                    return;
+                  }
+                  $scope.allColumns.push(createColumnInfo(column));
+                });
+
+                var currentTable = $scope.allTables.find(function(table) {
+                  return table.name === $scope.table;
+                });
+                extractColumnsInfo(currentTable, columns);
 
                 $scope.allTables.forEach(function(table) {
-                  if (table.name === currentTable.name) {
+                  if (table.name === $scope.table) {
                     return;
                   }
                   extractTableInfo(table);
