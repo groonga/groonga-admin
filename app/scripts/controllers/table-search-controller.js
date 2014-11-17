@@ -200,15 +200,6 @@ angular.module('groongaAdminApp')
       }
 
       function extractColumnsInfo(table, columns) {
-        if (table.name === $scope.table) {
-          columns.forEach(function(column) {
-            if (column.isIndex) {
-              return;
-            }
-            $scope.allColumns.push(createColumnInfo(column));
-          });
-        }
-
         columns.forEach(function(column) {
           if (!column.isIndex) {
             return;
@@ -283,6 +274,15 @@ angular.module('groongaAdminApp')
 
             client.execute('column_list', {table: currentTable.name})
               .success(function(response) {
+                if (currentTable.name === $scope.table) {
+                  response.columns().forEach(function(column) {
+                    if (column.isIndex) {
+                      return;
+                    }
+                    $scope.allColumns.push(createColumnInfo(column));
+                  });
+                }
+
                 extractColumnsInfo(currentTable, response.columns());
 
                 $scope.allTables.forEach(function(table) {
