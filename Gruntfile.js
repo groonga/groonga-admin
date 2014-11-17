@@ -385,7 +385,7 @@ module.exports = function (grunt) {
           cwd: '<%= yeoman.dist %>',
           dest: '<%= yeoman.archive %>/html',
           src: [
-            '*'
+            '**'
           ]
         }, {
           expand: true,
@@ -410,7 +410,7 @@ module.exports = function (grunt) {
             'package.json',
             '<%= yeoman.app %>/**/*',
             '!<%= yeoman.app %>/styles/*.css',
-            '!<%= yeoman.app %>/styles/.sass-cache/'
+            '!<%= yeoman.app %>/styles/.sass-cache/**/*'
           ]
         }]
       }
