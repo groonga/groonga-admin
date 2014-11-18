@@ -28,9 +28,9 @@ angular.module('groongaAdminApp')
           elapsedTimeInMilliseconds: 0,
           nTotalRecords: 0
         };
-        $scope.indexedColumns = [];
         $scope.allTables = [];
         $scope.allColumns = [];
+        $scope.indexedColumns = [];
         $scope.commandLine = '';
         $scope.message = '';
         $scope.currentPage = 1;
