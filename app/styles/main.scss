@@ -23,6 +23,21 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
   @extend .col-md-10;
 }
 
+.search-form {
+  @extend .form-inline;
+
+  .form-group {
+    display: block;
+    margin-bottom: 15px;
+  }
+}
+
+.time-query {
+  .dropdown {
+    display: inline-block;
+  }
+}
+
 .table-search-result {
   @extend .table-responsive;
 

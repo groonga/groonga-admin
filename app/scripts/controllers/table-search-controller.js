@@ -30,6 +30,7 @@ angular.module('groongaAdminApp')
         };
         $scope.allTables = [];
         $scope.allColumns = [];
+        $scope.timeColumns = [];
         $scope.indexedColumns = [];
         $scope.commandLine = '';
         $scope.message = '';
@@ -62,6 +63,65 @@ angular.module('groongaAdminApp')
         return keys.join(',');
       }
 
+      function toGroongaTime(date) {
+        return '"' + $filter('date')(date, 'yyyy-MM-dd HH:mm:ss.sss') + '"';
+      }
+
+      function fromGroongaTime(time) {
+        if (typeof time === 'number') {
+          return new Date(time * 1000);
+        } else {
+          return new Date(time.replace(/ /, 'T'));
+        }
+      }
+
+      function toBetweenBorder(included) {
+        if (included) {
+          return '"include"';
+        } else {
+          return '"exclude"';
+        }
+      }
+
+      function fromBetweenBorder(border) {
+        return border === 'include';
+      }
+
+      function buildFilter() {
+        var timeQueries = $scope.timeColumns.filter(function(column) {
+          return column.start || column.end;
+        }).map(function(column) {
+          var operator;
+          var groongaTime;
+          if (column.start && column.end) {
+            return 'between(' + column.name + ', ' +
+              toGroongaTime(column.start) + ', ' +
+              toBetweenBorder(column.startIncluded) + ', ' +
+              toGroongaTime(column.end) + ', ' +
+              toBetweenBorder(column.endIncluded) + ')';
+          } else if (column.start) {
+            if (column.startIncluded) {
+              operator = '>=';
+            } else {
+              operator = '>';
+            }
+            groongaTime = toGroongaTime(column.start);
+            return column.name + ' ' + operator + ' ' + groongaTime;
+          } else {
+            if (column.endIncluded) {
+              operator = '<=';
+            } else {
+              operator = '<';
+            }
+            groongaTime = toGroongaTime(column.end);
+            return column.name + ' ' + operator + ' ' + groongaTime;
+          }
+        });
+        console.log(timeQueries);
+
+        return timeQueries.join(' && ');
+      }
+
       function search() {
         var parameters = angular.copy($scope.parameters);
 
@@ -89,6 +149,8 @@ angular.module('groongaAdminApp')
         parameters.drilldown = packColumns(drilldowns);
 
         parameters.drilldown_sortby = '-_nsubrecs';
+
+        parameters.filter = buildFilter();
 
         $location.search(parameters);
       }
@@ -199,6 +261,94 @@ angular.module('groongaAdminApp')
         };
       }
 
+      function addColumn(columnInfo) {
+        $scope.allColumns.push(columnInfo);
+        if (columnInfo.type === 'Time') {
+          var timeColumnInfo = {
+            name: columnInfo.name,
+            start: null,
+            startIncluded: true,
+            end: null,
+            endIncluded: true
+          };
+          $scope.timeColumns.push(timeColumnInfo);
+        }
+      }
+
+      function applyTimeQueries() {
+        var filter = $scope.parameters.filter || '';
+        var conditions = filter.split(/\s*(\|\||&&)\s*/);
+        conditions.forEach(function(condition) {
+          var parts;
+          var columnName;
+          var operator;
+          var time;
+          var timeColumn;
+          if (/^between\(/.test(condition)) {
+            parts = condition.split(/\s*[(,)]\s*/).map(function(part) {
+              var matchData = part.match(/^"(.*)"$/);
+              if (matchData) {
+                return matchData[1];
+              }
+              matchData = part.match(/^\d+$/);
+              if (matchData) {
+                return parseInt(part);
+              }
+              matchData = part.match(/^\d+\.\d+$/);
+              if (matchData) {
+                return parseFloat(part);
+              }
+              return part;
+            });
+            columnName = parts[1];
+            var start = parts[2];
+            var startBorder = parts[3];
+            var end = parts[4];
+            var endBorder = parts[5];
+            timeColumn = $scope.timeColumns.find(function(column) {
+              return column.name === columnName;
+            });
+            if (!timeColumn) {
+              return;
+            }
+            console.log([start, fromGroongaTime(start)]);
+            timeColumn.start = fromGroongaTime(start);
+            timeColumn.startBorder = fromBetweenBorder(startBorder);
+            timeColumn.end = fromGroongaTime(end);
+            timeColumn.endBorder = fromBetweenBorder(endBorder);
+          } else if (/(<=|<|>|=>)/.test(condition)) {
+            parts = condition.split(/(<=|<|>|=>)/);
+            columnName = parts[0];
+            operator = parts[1];
+            time = parts[2];
+            timeColumn = $scope.timeColumns.find(function(column) {
+              return column.name === columnName;
+            });
+            if (!timeColumn) {
+              return;
+            }
+            switch (operator) {
+            case '<=':
+              timeColumn.end = fromGroongaTime(time);
+              timeColumn.endBorder = 'include';
+              break;
+            case '<':
+              timeColumn.end = fromGroongaTime(time);
+              timeColumn.endBorder = 'exclude';
+              break;
+            case '>':
+              timeColumn.start = fromGroongaTime(time);
+              timeColumn.startBorder = 'exclude';
+              break;
+            case '>=':
+              timeColumn.start = fromGroongaTime(time);
+              timeColumn.startBorder = 'include';
+              break;
+            }
+          }
+        });
+      }
+
       function extractColumnsInfo(table, columns) {
         columns.forEach(function(column) {
           if (!column.isIndex) {
@@ -267,7 +417,7 @@ angular.module('groongaAdminApp')
               name: '_id',
               range: 'UInt32'
             };
-            $scope.allColumns.push(createColumnInfo(idColumn));
+            addColumn(createColumnInfo(idColumn));
 
             client.execute('column_list', {table: $scope.table})
               .success(function(response) {
@@ -277,8 +427,9 @@ angular.module('groongaAdminApp')
                   if (column.isIndex) {
                     return;
                   }
-                  $scope.allColumns.push(createColumnInfo(column));
+                  addColumn(createColumnInfo(column));
                 });
+                applyTimeQueries();
 
                 var currentTable = $scope.allTables.find(function(table) {
                   return table.name === $scope.table;
