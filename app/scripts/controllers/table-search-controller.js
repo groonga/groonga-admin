@@ -117,7 +117,6 @@ angular.module('groongaAdminApp')
             return column.name + ' ' + operator + ' ' + groongaTime;
           }
         });
-        console.log(timeQueries);
 
         return timeQueries.join(' && ');
       }
@@ -311,7 +310,6 @@ angular.module('groongaAdminApp')
             if (!timeColumn) {
               return;
             }
-            console.log([start, fromGroongaTime(start)]);
             timeColumn.start = fromGroongaTime(start);
             timeColumn.startBorder = fromBetweenBorder(startBorder);
             timeColumn.end = fromGroongaTime(end);
