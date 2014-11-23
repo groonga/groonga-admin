@@ -40,6 +40,7 @@ angular.module('groongaAdminApp')
         $scope.parameters = angular.copy($location.search());
 
         $scope.search = search;
+        $scope.incrementalSearch = incrementalSearch;
         $scope.clear  = clear;
         $scope.toggleSort = toggleSort;
         $scope.selectDrilldown = selectDrilldown;
@@ -156,6 +157,10 @@ angular.module('groongaAdminApp')
 
       function search() {
         $location.search(buildParameters());
+      }
+
+      function incrementalSearch() {
+        select(buildParameters());
       }
 
       function clear() {
@@ -466,6 +471,7 @@ angular.module('groongaAdminApp')
         });
         var request = client.execute('select', parameters);
         request.success(function(response) {
+          $scope.message = '';
           $scope.response.rawData = response.rawData();
           $scope.commandLine = request.commandLine();
           $scope.response.elapsedTimeInMilliseconds =

@@ -81,7 +81,10 @@
       <div class="form-group">
         <div class="input-group">
           <span class="input-group-addon">Query</span>
-          <input type="search" class="form-control" ng-model="parameters.query">
+          <input type="search"
+                 class="form-control"
+                 ng-model="parameters.query"
+                 ng-change="incrementalSearch()">
         </div>
         <div class="input-group">
           <button ng-click="search()" class="btn btn-default">Search</button>
