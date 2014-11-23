@@ -135,7 +135,6 @@ angular.module('groongaAdminApp')
         });
         parameters.output_columns = packColumns(outputColumns);
 
-        parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
         parameters.limit = $scope.nRecordsInPage;
 
         var sortColumns = $scope.response.columns.filter(function(column) {
@@ -156,7 +155,9 @@ angular.module('groongaAdminApp')
       }
 
       function search() {
-        $location.search(buildParameters());
+        var parameters = buildParameters();
+        parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
+        $location.search(parameters);
       }
 
       function incrementalSearch() {
