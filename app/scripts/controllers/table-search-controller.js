@@ -370,7 +370,8 @@ angular.module('groongaAdminApp')
             });
             if (sourceColumn) {
               var targetType = sourceColumn.type;
-              if (isTableType(targetType)) {
+              var isTableTypeSource = isTableType(targetType);
+              if (isTableTypeSource) {
                 var table = $scope.allTables.find(function(table) {
                   return table.name === targetType;
                 });
@@ -380,7 +381,7 @@ angular.module('groongaAdminApp')
                 return;
               }
 
-              if (isTableType(targetType)) {
+              if (isTableTypeSource) {
                 indexName += '._key';
               }
             }
