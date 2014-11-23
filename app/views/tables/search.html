@@ -31,9 +31,11 @@
               <tr ng-repeat="column in allColumns track by $index">
                 <td>{{column.name}}</td>
                 <td><input type="checkbox"
-                           ng-model="column.output"></td>
+                           ng-model="column.output"
+                           ng-change="incrementalSearch()"></td>
                 <td><input type="checkbox"
-                           ng-model="column.drilldown"></td>
+                           ng-model="column.drilldown"
+                           ng-change="incrementalSearch()"></td>
               </tr>
             </tbody>
           </table>
@@ -72,7 +74,8 @@
           <span ng-repeat="indexedColumn in indexedColumns track by $index">
             <label>
               <input type="checkbox"
-                     ng-model="indexedColumn.inUse">
+                     ng-model="indexedColumn.inUse"
+                     ng-change="incrementalSearch()">
               {{indexedColumn.label}}
             </label>
           </span>
@@ -105,7 +108,8 @@
                 <span class="glyphicon glyphicon-calendar"></span>
               </button>
               <div class="dropdown-menu" role="menu">
-                <datetimepicker ng-model="timeColumn.start"/>
+                <datetimepicker ng-model="timeColumn.start"
+                                ng-change="incrementalSearch()"/>
               </div>
             </div>
             <span class="form-control">
@@ -125,7 +129,8 @@
                 <span class="glyphicon glyphicon-calendar"></span>
               </button>
               <div class="dropdown-menu" role="menu">
-                <datetimepicker ng-model="timeColumn.end"/>
+                <datetimepicker ng-model="timeColumn.end"
+                                ng-change="incrementalSearch()"/>
               </div>
             </div>
             <span class="form-control">
