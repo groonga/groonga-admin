@@ -9,8 +9,8 @@
  */
 angular.module('groongaAdminApp')
   .controller('TableSearchController', [
-    '$scope', '$routeParams', '$location', '$http', '$filter',
-    function ($scope, $routeParams, $location, $http, $filter) {
+    '$scope', '$routeParams', '$location', '$q', '$http', '$filter',
+    function ($scope, $routeParams, $location, $q, $http, $filter) {
       var client = new GroongaClient($http);
 
       function computeCurrentPage(offset) {
@@ -121,7 +121,7 @@ angular.module('groongaAdminApp')
         return timeQueries.join(' && ');
       }
 
-      function search() {
+      function buildParameters() {
         var parameters = angular.copy($scope.parameters);
 
         var matchColumns = $scope.indexedColumns.filter(function(column) {
@@ -151,7 +151,11 @@ angular.module('groongaAdminApp')
 
         parameters.filter = buildFilter();
 
-        $location.search(parameters);
+        return parameters;
+      }
+
+      function search() {
+        $location.search(buildParameters());
       }
 
       function clear() {
@@ -401,7 +405,7 @@ angular.module('groongaAdminApp')
       }
 
       function extractTableInfo(table) {
-        client.execute('column_list', {table: table.name})
+        return client.execute('column_list', {table: table.name})
           .success(function(response) {
             extractColumnsInfo(table, response.columns());
           });
@@ -435,21 +439,26 @@ angular.module('groongaAdminApp')
                 });
                 extractColumnsInfo(currentTable, columns);
 
+                var tasks = [];
                 $scope.allTables.forEach(function(table) {
                   if (table.name === $scope.table) {
                     return;
                   }
-                  extractTableInfo(table);
+                  tasks.push(extractTableInfo(table));
                 });
+                $q.all(tasks)
+                  .then(function() {
+                    select(buildParameters());
+                  });
               });
           });
       }
 
-      function select() {
+      function select(userParameters) {
         var parameters = {
           table: $scope.table
         };
-        angular.forEach($scope.parameters, function(value, key) {
+        angular.forEach(userParameters, function(value, key) {
           if (key in parameters) {
             return;
           }
@@ -511,5 +520,4 @@ angular.module('groongaAdminApp')
 
       initialize();
       fillOptions();
-      select();
     }]);
