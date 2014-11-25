@@ -137,7 +137,7 @@ angular.module('groongaAdminApp')
 
         parameters.limit = $scope.nRecordsInPage;
 
-        var sortColumns = $scope.response.columns.filter(function(column) {
+        var sortColumns = $scope.allColumns.filter(function(column) {
           return column.sort;
         });
         parameters.sortby = packSortColumns(sortColumns);
@@ -168,9 +168,8 @@ angular.module('groongaAdminApp')
         $location.search({});
       }
 
-      function setColumnSort(column, sort) {
-        column.sort = sort;
-        switch (column.sort) {
+      function setSortIconClass(column, sort) {
+        switch (sort) {
         case 'ascending':
           column.iconClass = 'glyphicon-sort-by-attributes';
           break;
@@ -184,8 +183,15 @@ angular.module('groongaAdminApp')
       }
 
       function toggleSort(column) {
+        var columnInfo = $scope.allColumns.find(function(columnInfo) {
+          return columnInfo.name === column.name;
+        });
+        if (!columnInfo) {
+          return;
+        }
+
         var sort;
-        switch (column.sort) {
+        switch (columnInfo.sort) {
         case 'ascending':
           sort = 'descending';
           break;
@@ -196,8 +202,9 @@ angular.module('groongaAdminApp')
           sort = 'ascending';
           break;
         }
-        setColumnSort(column, sort);
-        search();
+        columnInfo.sort = sort;
+        setSortIconClass(column, columnInfo.sort);
+        incrementalSearch();
       }
 
       function isTableType(type) {
@@ -262,11 +269,20 @@ angular.module('groongaAdminApp')
           drilldown = drilldowns.indexOf(name) !== -1;
         }
 
+        var sort = null;
+        var sortKeys = ($scope.parameters.sortby || '').split(/\s*,\s*/);
+        if (sortKeys.indexOf(column.name) !== -1) {
+          sort = 'ascending';
+        } else if (sortKeys.indexOf('-' + column.name) !== -1) {
+          sort = 'descending';
+        }
+
         return {
           name: name,
           type: column.range,
           output: output,
-          drilldown: drilldown
+          drilldown: drilldown,
+          sort: sort
         };
       }
 
@@ -485,16 +501,14 @@ angular.module('groongaAdminApp')
           }
           $scope.currentPage = computeCurrentPage(parameters.offset || 0);
           $scope.response.nTotalRecords = response.nTotalRecords();
-          var sortKeys = ($scope.parameters.sortby || '').split(/\s*,\s*/);
-          $scope.response.columns = response.columns().map(function(column) {
-            var sort = null;
-            if (sortKeys.indexOf(column.name) !== -1) {
-              sort = 'ascending';
-            } else if (sortKeys.indexOf('-' + column.name) !== -1) {
-              sort = 'descending';
+          $scope.response.columns = response.columns();
+          $scope.response.columns.forEach(function(column) {
+            var columnInfo = $scope.allColumns.find(function(columnInfo) {
+              return columnInfo.name === column.name;
+            });
+            if (columnInfo) {
+              setSortIconClass(column, columnInfo.sort);
             }
-            setColumnSort(column, sort);
-            return column;
           });
           $scope.response.records = response.records().map(function(record) {
             return record.map(function(value, index) {
