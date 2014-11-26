@@ -528,7 +528,7 @@ angular.module('groongaAdminApp')
             });
           });
           $scope.response.drilldowns = response.drilldowns();
-          ($scope.parameters.drilldown || '')
+          (parameters.drilldown || '')
             .split(/\s*,\s*/)
             .filter(function(drilldown) {
               return drilldown.length > 0;
