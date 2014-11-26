@@ -235,7 +235,12 @@ angular.module('groongaAdminApp')
           }
         }
 
-        var escapedValue = '"' + value.replace('"', '\\"') + '"';
+        var escapedValue;
+        if (typeof value === 'string') {
+          escapedValue = '"' + value.replace('"', '\\"') + '"';
+        } else {
+          escapedValue = value.toString();
+        }
 
         var query = $scope.parameters.query || '';
         if (query.length > 0) {
