@@ -1,6 +1,6 @@
 {
   "name": "groonga-admin",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Groonga Admin is an administration Web UI for Groonga",
   "keywords": [
     "Groonga"
