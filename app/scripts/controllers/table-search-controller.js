@@ -40,9 +40,7 @@ angular.module('groongaAdminApp')
         } else {
           $scope.nRecordsInPage = 10;
         }
-        if ($scope.parameters.offset && $scope.nRecordsInPage > 0) {
-          $scope.currentPage = $scope.parameters.offset / $scope.nRecordsInPage;
-        }
+        $scope.currentPage = computeCurrentPage($scope.parameters.offset || 0);
         $scope.maxNPages = 10;
 
         $scope.search = search;
