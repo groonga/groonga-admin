@@ -34,10 +34,16 @@ angular.module('groongaAdminApp')
         $scope.indexedColumns = [];
         $scope.commandLine = '';
         $scope.message = '';
-        $scope.currentPage = 1;
-        $scope.nRecordsInPage = 10;
-        $scope.maxNPages = 10;
         $scope.parameters = angular.copy($location.search());
+        if ($scope.parameters.limit && $scope.parameters.limit > 0) {
+          $scope.nRecordsInPage = $scope.parameters.limit;
+        } else {
+          $scope.nRecordsInPage = 10;
+        }
+        if ($scope.parameters.offset && $scope.nRecordsInPage > 0) {
+          $scope.currentPage = $scope.parameters.offset / $scope.nRecordsInPage;
+        }
+        $scope.maxNPages = 10;
 
         $scope.search = search;
         $scope.incrementalSearch = incrementalSearch;
@@ -135,6 +141,7 @@ angular.module('groongaAdminApp')
         });
         parameters.output_columns = packColumns(outputColumns);
 
+        parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
         parameters.limit = $scope.nRecordsInPage;
 
         var sortColumns = $scope.allColumns.filter(function(column) {
@@ -155,9 +162,7 @@ angular.module('groongaAdminApp')
       }
 
       function search() {
-        var parameters = buildParameters();
-        parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
-        $location.search(parameters);
+        $location.search(buildParameters());
       }
 
       function incrementalSearch() {
@@ -475,7 +480,11 @@ angular.module('groongaAdminApp')
                 });
                 $q.all(tasks)
                   .then(function() {
-                    select(buildParameters());
+                    var parameters = buildParameters();
+                    if ($scope.parameters.offset) {
+                      parameters.offset = $scope.parameters.offset;
+                    }
+                    select(parameters);
                   });
               });
           });
