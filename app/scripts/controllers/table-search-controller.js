@@ -13,6 +13,18 @@ angular.module('groongaAdminApp')
     function ($scope, $routeParams, $location, $q, $http, $filter) {
       var client = new GroongaClient($http);
 
+      function findElement(array, finder) {
+        var i, length;
+        length = array.length;
+        for (i = 0; i < length; i++) {
+          var element = array[i];
+          if (finder(element)) {
+            return element;
+          }
+        }
+        return undefined;
+      }
+
       function computeCurrentPage(offset) {
         return Math.ceil((parseInt(offset) + 1) / $scope.nRecordsInPage);
       }
@@ -186,7 +198,7 @@ angular.module('groongaAdminApp')
       }
 
       function toggleSort(column) {
-        var columnInfo = $scope.allColumns.find(function(columnInfo) {
+        var columnInfo = findElement($scope.allColumns, function(columnInfo) {
           return columnInfo.name === column.name;
         });
         if (!columnInfo) {
@@ -229,7 +241,7 @@ angular.module('groongaAdminApp')
 
       function selectDrilldown(key, value) {
         var queryKey = key;
-        var column = $scope.allColumns.find(function(column) {
+        var column = findElement($scope.allColumns, function(column) {
           return column.name === key;
         });
         if (column) {
@@ -338,7 +350,7 @@ angular.module('groongaAdminApp')
             var startBorder = parts[3];
             var end = parts[4];
             var endBorder = parts[5];
-            timeColumn = $scope.timeColumns.find(function(column) {
+            timeColumn = findElement($scope.timeColumns, function(column) {
               return column.name === columnName;
             });
             if (!timeColumn) {
@@ -353,7 +365,7 @@ angular.module('groongaAdminApp')
             columnName = parts[0];
             operator = parts[1];
             time = parts[2];
-            timeColumn = $scope.timeColumns.find(function(column) {
+            timeColumn = findElement($scope.timeColumns, function(column) {
               return column.name === columnName;
             });
             if (!timeColumn) {
@@ -399,14 +411,14 @@ angular.module('groongaAdminApp')
             }
 
             var indexName = localName;
-            var sourceColumn = $scope.allColumns.find(function(column) {
+            var sourceColumn = findElement($scope.allColumns, function(column) {
               return column.name === localName;
             });
             if (sourceColumn) {
               var targetType = sourceColumn.type;
               var isTableTypeSource = isTableType(targetType);
               if (isTableTypeSource) {
-                var table = $scope.allTables.find(function(table) {
+                var table = findElement($scope.allTables, function(table) {
                   return table.name === targetType;
                 });
                 targetType = table.domain;
@@ -464,7 +476,7 @@ angular.module('groongaAdminApp')
                 });
                 applyTimeQueries();
 
-                var currentTable = $scope.allTables.find(function(table) {
+                var currentTable = findElement($scope.allTables, function(table) {
                   return table.name === $scope.table;
                 });
                 extractColumnsInfo(currentTable, columns);
@@ -515,7 +527,7 @@ angular.module('groongaAdminApp')
           $scope.response.nTotalRecords = response.nTotalRecords();
           $scope.response.columns = response.columns();
           $scope.response.columns.forEach(function(column) {
-            var columnInfo = $scope.allColumns.find(function(columnInfo) {
+            var columnInfo = findElement($scope.allColumns, function(columnInfo) {
               return columnInfo.name === column.name;
             });
             if (columnInfo) {
