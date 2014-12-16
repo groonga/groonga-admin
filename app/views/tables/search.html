@@ -116,9 +116,10 @@
                                 ng-change="incrementalSearch()"/>
               </div>
             </div>
-            <span class="form-control">
-              {{timeColumn.start | date: "yyyy-MM-ddTHH:mm:ssZ"}}
-            </span>
+            <input type="datetime-local"
+                   class="form-control"
+                   ng-model="timeColumn.start"
+                   ng-change="incrementalSearch()">
           </div>
         </div>
         -
@@ -137,9 +138,10 @@
                                 ng-change="incrementalSearch()"/>
               </div>
             </div>
-            <span class="form-control">
-              {{timeColumn.end | date: "yyyy-MM-ddTHH:mm:ssZ"}}
-            </span>
+            <input type="datetime-local"
+                   class="form-control"
+                   ng-model="timeColumn.end"
+                   ng-change="incrementalSearch()">
           </div>
         </div>
       </div>
