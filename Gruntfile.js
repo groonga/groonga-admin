@@ -511,6 +511,10 @@ module.exports = function (grunt) {
     shell.exec('scp ' +
                archiveBaseName + '.tar.gz ' +
                'packages@packages.groonga.org:public/source/groonga-admin/');
+    shell.exec('ssh ' +
+               'packages@packages.groonga.org ' +
+               'ln -fs ' + archiveBaseName + '.tar.gz ' +
+               'public/source/groonga-admin/' + pkg.name + '.tar.gz');
   });
 
   grunt.registerTask('release:package', 'Release archived package', [
