@@ -152,7 +152,7 @@ angular.module('groongaAdminApp')
           });
           return defer.promise;
         } else {
-          fetching = true
+          fetching = true;
           return fetchTables();
         }
       };
