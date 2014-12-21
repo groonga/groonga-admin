@@ -1,6 +1,8 @@
 # Groonga Admin
 
-Groonga Admin is a Web UI to administrate Groonga.
+Groonga Admin is a Web UI to administrate Groonga. Groonga Admin is
+designed for light Groonga users. It means that users who doesn't know
+Groonga details can use Groonga Admin.
 
 Groonga Admin is based on client site technologies such as HTML,
 JavaScript and CSS. So you don't need to install server process. You
