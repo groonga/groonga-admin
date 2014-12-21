@@ -140,12 +140,13 @@ angular.module('groongaAdminApp')
       }
 
       return function() {
+        var defer;
         if (fetching) {
-          var defer = $q.defer();
+          defer = $q.defer();
           waitingDeferes.push(defer);
           return defer.promise;
         } else if (fetched) {
-          var defer = $q.defer();
+          defer = $q.defer();
           $timeout(function() {
             defer.resolve(schema);
           });
