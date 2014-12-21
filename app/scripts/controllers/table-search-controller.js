@@ -237,7 +237,7 @@ angular.module('groongaAdminApp')
           return column.name === key;
         });
         if (column) {
-          if (column.isTableType) {
+          if (column.valueType.isReferenceType) {
             queryKey += '._key';
           }
         }
@@ -296,39 +296,63 @@ angular.module('groongaAdminApp')
           drilldown: drilldown,
           sort: sort,
           indexes: column.indexes || [],
-          isTextType: column.isTextType,
-          isTableType: column.isTableType
+          valueType: column.valueType
         };
+      }
+
+      function addTimeColumn(columnInfo) {
+        if (columnInfo.type !== 'Time') {
+          return;
+        }
+
+        var timeColumnInfo = {
+          name: columnInfo.name,
+          start: null,
+          startIncluded: true,
+          end: null,
+          endIncluded: true
+        };
+        $scope.table.timeColumns.push(timeColumnInfo);
+      }
+
+      function addIndexedColumn(columnInfo) {
+        if (columnInfo.indexes.length === 0) {
+          return;
+        }
+
+        var isTextType = false;
+        if (columnInfo.valueType.isReferenceType) {
+          var table = schema.tables[columnInfo.valueType.name];
+          isTextType = table.keyType.isTextType;
+        } else {
+          isTextType = columnInfo.valueType.isTextType;
+        }
+
+        if (!isTextType) {
+          return;
+        }
+
+        var matchColumns = $scope.parameters.match_columns;
+        var indexName = columnInfo.name;
+        if (columnInfo.valueType.isReferenceType) {
+          indexName += '._key';
+        }
+        var inUse = true;
+        if (matchColumns) {
+          inUse = (matchColumns.indexOf(indexName) !== -1);
+        }
+        var indexedColumnInfo = {
+          name: columnInfo.name,
+          indexName: indexName,
+          inUse: inUse
+        };
+        $scope.table.indexedColumns.push(indexedColumnInfo);
       }
 
       function addColumn(columnInfo) {
         $scope.table.allColumns.push(columnInfo);
-
-        if (columnInfo.type === 'Time') {
-          var timeColumnInfo = {
-            name: columnInfo.name,
-            start: null,
-            startIncluded: true,
-            end: null,
-            endIncluded: true
-          };
-          $scope.table.timeColumns.push(timeColumnInfo);
-        }
-
-        var matchColumns = $scope.parameters.match_columns;
-        columnInfo.indexes.forEach(function(/* index */) {
-          var indexName = columnInfo.name;
-          var inUse = true;
-          if (matchColumns) {
-            inUse = (matchColumns.indexOf(indexName) !== -1);
-          }
-          var indexedColumnInfo = {
-            name: columnInfo.name,
-            indexName: indexName,
-            inUse: inUse
-          };
-          $scope.table.indexedColumns.push(indexedColumnInfo);
-        });
+        addTimeColumn(columnInfo);
+        addIndexedColumn(columnInfo);
       }
 
       function applyTimeQueries() {

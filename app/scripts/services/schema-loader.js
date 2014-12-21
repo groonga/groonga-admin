@@ -34,9 +34,25 @@ angular.module('groongaAdminApp')
         return typeName in schema.tables;
       }
 
+      function resolveTable(table) {
+        table.keyType = {
+          name: table.domain,
+          isTextType: isTextType(table.domain)
+        };
+      }
+
+      function resolveTables() {
+        angular.forEach(schema.tables, function(table) {
+          resolveTable(table);
+        });
+      }
+
       function resolveColumn(column) {
-        column.isTextType = isTextType(column.range);
-        column.isReferenceType = isReferenceType(column.range);
+        column.valueType = {
+          name: column.range,
+          isTextType: isTextType(column.range),
+          isReferenceType: isReferenceType(column.range)
+        };
       }
 
       function resolveColumns() {
@@ -101,6 +117,7 @@ angular.module('groongaAdminApp')
             response.tables().forEach(function(table) {
               schema.tables[table.name] = table;
             });
+            resolveTables();
 
             var fetchColumnsTasks = [];
             angular.forEach(schema.tables, function(table) {
