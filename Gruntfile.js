@@ -517,6 +517,18 @@ module.exports = function (grunt) {
                'public/source/groonga-admin/' + pkg.name + '.tar.gz');
   });
 
+  grunt.registerTask('git:tag', 'Tag the current version', function () {
+    var news = grunt.file.read('doc/text/news.md', encoding: 'utf8');
+    var releaseNote = '## ' + news.split(/^## /m)[1];
+    var releaseNoteFileName = 'release-note.md';
+    grunt.file.write(releaseNoteFileName, releaseNote);
+    shell.exec('git --annotate ' +
+               '--file ' + releaseNoteFileName + ' ' +
+               pkg.version);
+    grunt.file.delete(releaseNoteFileName);
+    shell.exec('git push --tags');
+  });
+
   grunt.registerTask('release:package', 'Release archived package', [
     'build',
     'clean:archive',
@@ -524,5 +536,6 @@ module.exports = function (grunt) {
     'archive',
     'clean:archive',
     'archive:upload',
+    'git:tag'
   ]);
 };
