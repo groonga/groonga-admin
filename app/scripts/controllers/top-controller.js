@@ -8,11 +8,14 @@
  * Controller of the groongaAdminApp
  */
 angular.module('groongaAdminApp')
-  .controller('TopController', function ($scope, $http) {
-    $scope.tables = [];
-    var client = new GroongaClient($http);
-    var request = client.execute('table_list', {});
-    request.success(function(response) {
-      $scope.tables = response.tables();
-    });
-  });
+  .controller('TopController', [
+    '$scope', 'schemaLoader',
+    function ($scope, schemaLoader) {
+      $scope.tables = [];
+      schemaLoader()
+        .then(function(schema) {
+          angular.forEach(schema.tables, function(table) {
+            $scope.tables.push(table);
+          });
+        });
+    }]);

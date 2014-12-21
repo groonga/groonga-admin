@@ -32,15 +32,19 @@
 
   GroongaClient.Request.prototype.success = function(callback) {
     var name = this._name;
-    return this._rawRequest.success(function(data, status, headers, config) {
+    return this._rawRequest.then(function(rawResponse) {
       var ResponseConstructor = GroongaClient.Response.find(name);
-      var response = new ResponseConstructor(data);
-      callback(response, status, headers, config);
+      var response = new ResponseConstructor(rawResponse.data);
+      return callback(response, rawResponse);
     });
   };
 
   GroongaClient.Request.prototype.error = function(callback) {
-    return this._rawRequest.error(callback);
+    return this._rawRequest.then(null, function(rawResponse) {
+      var ResponseConstructor = GroongaClient.Response.find(name);
+      var response = new ResponseConstructor(rawResponse.data);
+      return callback(response, rawResponse);
+    });
   };
 
   GroongaClient.Request.prototype.commandLine = function() {

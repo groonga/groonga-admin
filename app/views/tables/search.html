@@ -2,7 +2,7 @@
   <ol class="breadcrumb">
     <li><a href="#">Top</a></li>
     <li><a href="#/tables/">Tables</a></li>
-    <li><a href="#/tables/{{table}}">{{table}}</a></li>
+    <li><a href="#/tables/{{table.name}}">{{table.name}}</a></li>
     <li class="active">Search</li>
   </ol>
 
@@ -44,7 +44,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="column in allColumns track by $index">
+              <tr ng-repeat="column in table.allColumns track by $index">
                 <td>{{column.name}}</td>
                 <td><input type="checkbox"
                            ng-model="column.output"
@@ -87,12 +87,12 @@
     <form class="search-form" role="search">
       <div class="form-group">
         <div class="input-group">
-          <span ng-repeat="indexedColumn in indexedColumns track by $index">
+          <span ng-repeat="indexedColumn in table.indexedColumns track by $index">
             <label>
               <input type="checkbox"
                      ng-model="indexedColumn.inUse"
                      ng-change="incrementalSearch()">
-              {{indexedColumn.label}}
+              {{indexedColumn.name}}
             </label>
           </span>
         </div>
@@ -107,7 +107,7 @@
         </div>
       </div>
       <div class="form-group time-query"
-           ng-repeat="timeColumn in timeColumns track by $index">
+           ng-repeat="timeColumn in table.timeColumns track by $index">
         {{timeColumn.name}}:
         <div class="dropdown">
           <div class="input-group">

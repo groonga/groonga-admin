@@ -9,8 +9,9 @@
  */
 angular.module('groongaAdminApp')
   .controller('TableSearchController', [
-    '$scope', '$routeParams', '$location', '$q', '$http', '$filter',
-    function ($scope, $routeParams, $location, $q, $http, $filter) {
+    '$scope', '$routeParams', '$location', '$http', '$filter', 'schemaLoader',
+    function ($scope, $routeParams, $location, $http, $filter, schemaLoader) {
+      var schema;
       var client = new GroongaClient($http);
 
       function findElement(array, finder) {
@@ -30,7 +31,12 @@ angular.module('groongaAdminApp')
       }
 
       function initialize() {
-        $scope.table = $routeParams.table;
+        $scope.table = {
+          name: $routeParams.table,
+          allColumns: [],
+          timeColumns: [],
+          indexedColumns: []
+        };
         $scope.style = 'table';
         $scope.response = {
           rawData: [],
@@ -40,10 +46,6 @@ angular.module('groongaAdminApp')
           elapsedTimeInMilliseconds: 0,
           nTotalRecords: 0
         };
-        $scope.allTables = [];
-        $scope.allColumns = [];
-        $scope.timeColumns = [];
-        $scope.indexedColumns = [];
         $scope.commandLine = '';
         $scope.message = '';
         $scope.parameters = angular.copy($location.search());
@@ -65,6 +67,13 @@ angular.module('groongaAdminApp')
       function packColumns(columns) {
         var names = columns.map(function(column) {
           return column.name;
+        });
+        return names.join(',');
+      }
+
+      function packMatchColumns(columns) {
+        var names = columns.map(function(column) {
+          return column.indexName;
         });
         return names.join(',');
       }
@@ -105,7 +114,7 @@ angular.module('groongaAdminApp')
       }
 
       function buildFilter() {
-        var timeQueries = $scope.timeColumns.filter(function(column) {
+        var timeQueries = $scope.table.timeColumns.filter(function(column) {
           return column.start || column.end;
         }).map(function(column) {
           var operator;
@@ -141,12 +150,12 @@ angular.module('groongaAdminApp')
       function buildParameters() {
         var parameters = angular.copy($scope.parameters);
 
-        var matchColumns = $scope.indexedColumns.filter(function(column) {
+        var matchColumns = $scope.table.indexedColumns.filter(function(column) {
           return column.inUse;
         });
-        parameters.match_columns = packColumns(matchColumns);
+        parameters.match_columns = packMatchColumns(matchColumns);
 
-        var outputColumns = $scope.allColumns.filter(function(column) {
+        var outputColumns = $scope.table.allColumns.filter(function(column) {
           return column.output;
         });
         parameters.output_columns = packColumns(outputColumns);
@@ -154,12 +163,12 @@ angular.module('groongaAdminApp')
         parameters.offset = ($scope.currentPage - 1) * $scope.nRecordsInPage;
         parameters.limit = $scope.nRecordsInPage;
 
-        var sortColumns = $scope.allColumns.filter(function(column) {
+        var sortColumns = $scope.table.allColumns.filter(function(column) {
           return column.sort;
         });
         parameters.sortby = packSortColumns(sortColumns);
 
-        var drilldowns = $scope.allColumns.filter(function(column) {
+        var drilldowns = $scope.table.allColumns.filter(function(column) {
           return column.drilldown;
         });
         parameters.drilldown = packColumns(drilldowns);
@@ -198,7 +207,7 @@ angular.module('groongaAdminApp')
       }
 
       function toggleSort(column) {
-        var columnInfo = findElement($scope.allColumns, function(columnInfo) {
+        var columnInfo = findElement($scope.table.allColumns, function(columnInfo) {
           return columnInfo.name === column.name;
         });
         if (!columnInfo) {
@@ -222,30 +231,13 @@ angular.module('groongaAdminApp')
         incrementalSearch();
       }
 
-      function isTableType(type) {
-        return $scope.allTables.some(function(table) {
-          return table.name === type;
-        });
-      }
-
-      function isTextType(type) {
-        switch (type) {
-        case 'ShortText':
-        case 'Text':
-        case 'LongText':
-          return true;
-        default:
-          return false;
-        }
-      }
-
       function selectDrilldown(key, value) {
         var queryKey = key;
-        var column = findElement($scope.allColumns, function(column) {
+        var column = findElement($scope.table.allColumns, function(column) {
           return column.name === key;
         });
         if (column) {
-          if (isTableType(column.type)) {
+          if (column.isTableType) {
             queryKey += '._key';
           }
         }
@@ -302,12 +294,16 @@ angular.module('groongaAdminApp')
           type: column.range,
           output: output,
           drilldown: drilldown,
-          sort: sort
+          sort: sort,
+          indexes: column.indexes || [],
+          isTextType: column.isTextType,
+          isTableType: column.isTableType
         };
       }
 
       function addColumn(columnInfo) {
-        $scope.allColumns.push(columnInfo);
+        $scope.table.allColumns.push(columnInfo);
+
         if (columnInfo.type === 'Time') {
           var timeColumnInfo = {
             name: columnInfo.name,
@@ -316,8 +312,23 @@ angular.module('groongaAdminApp')
             end: null,
             endIncluded: true
           };
-          $scope.timeColumns.push(timeColumnInfo);
+          $scope.table.timeColumns.push(timeColumnInfo);
         }
+
+        var matchColumns = $scope.parameters.match_columns;
+        columnInfo.indexes.forEach(function(/* index */) {
+          var indexName = columnInfo.name;
+          var inUse = true;
+          if (matchColumns) {
+            inUse = (matchColumns.indexOf(indexName) !== -1);
+          }
+          var indexedColumnInfo = {
+            name: columnInfo.name,
+            indexName: indexName,
+            inUse: inUse
+          };
+          $scope.table.indexedColumns.push(indexedColumnInfo);
+        });
       }
 
       function applyTimeQueries() {
@@ -350,7 +361,7 @@ angular.module('groongaAdminApp')
             var startBorder = parts[3];
             var end = parts[4];
             var endBorder = parts[5];
-            timeColumn = findElement($scope.timeColumns, function(column) {
+            timeColumn = findElement($scope.table.timeColumns, function(column) {
               return column.name === columnName;
             });
             if (!timeColumn) {
@@ -365,7 +376,7 @@ angular.module('groongaAdminApp')
             columnName = parts[0];
             operator = parts[1];
             time = parts[2];
-            timeColumn = findElement($scope.timeColumns, function(column) {
+            timeColumn = findElement($scope.table.timeColumns, function(column) {
               return column.name === columnName;
             });
             if (!timeColumn) {
@@ -393,116 +404,9 @@ angular.module('groongaAdminApp')
         });
       }
 
-      function extractColumnsInfo(table, columns) {
-        columns.forEach(function(column) {
-          if (!column.isIndex) {
-            return;
-          }
-          if (column.range !== $scope.table) {
-            return;
-          }
-          var matchColumns = $scope.parameters.match_columns;
-          column.sources.forEach(function(source) {
-            var localName;
-            if (source.indexOf('.') === -1) {
-              localName = '_key';
-            } else {
-              localName = source.split('.')[1];
-            }
-
-            var indexName = localName;
-            var sourceColumn = findElement($scope.allColumns, function(column) {
-              return column.name === localName;
-            });
-            if (sourceColumn) {
-              var targetType = sourceColumn.type;
-              var isTableTypeSource = isTableType(targetType);
-              if (isTableTypeSource) {
-                var table = findElement($scope.allTables, function(table) {
-                  return table.name === targetType;
-                });
-                targetType = table.domain;
-              }
-              if (!isTextType(targetType)) {
-                return;
-              }
-
-              if (isTableTypeSource) {
-                indexName += '._key';
-              }
-            }
-
-            var inUse = true;
-            if (matchColumns) {
-              inUse = matchColumns.indexOf(indexName) !== -1;
-            }
-
-            $scope.indexedColumns.push({
-              name: indexName,
-              label: localName,
-              inUse: inUse
-            });
-          });
-        });
-      }
-
-      function extractTableInfo(table) {
-        return client.execute('column_list', {table: table.name})
-          .success(function(response) {
-            extractColumnsInfo(table, response.columns());
-          });
-      }
-
-      function fillOptions() {
-        client.execute('table_list')
-          .success(function(response) {
-            $scope.allTables = response.tables();
-
-            var idColumn = {
-              name: '_id',
-              range: 'UInt32'
-            };
-            addColumn(createColumnInfo(idColumn));
-
-            client.execute('column_list', {table: $scope.table})
-              .success(function(response) {
-                var columns = response.columns();
-
-                columns.forEach(function(column) {
-                  if (column.isIndex) {
-                    return;
-                  }
-                  addColumn(createColumnInfo(column));
-                });
-                applyTimeQueries();
-
-                var currentTable = findElement($scope.allTables, function(table) {
-                  return table.name === $scope.table;
-                });
-                extractColumnsInfo(currentTable, columns);
-
-                var tasks = [];
-                $scope.allTables.forEach(function(table) {
-                  if (table.name === $scope.table) {
-                    return;
-                  }
-                  tasks.push(extractTableInfo(table));
-                });
-                $q.all(tasks)
-                  .then(function() {
-                    var parameters = buildParameters();
-                    if ($scope.parameters.offset) {
-                      parameters.offset = $scope.parameters.offset;
-                    }
-                    select(parameters);
-                  });
-              });
-          });
-      }
-
       function select(userParameters) {
         var parameters = {
-          table: $scope.table
+          table: $scope.table.name
         };
         angular.forEach(userParameters, function(value, key) {
           if (key in parameters) {
@@ -527,7 +431,7 @@ angular.module('groongaAdminApp')
           $scope.response.nTotalRecords = response.nTotalRecords();
           $scope.response.columns = response.columns();
           $scope.response.columns.forEach(function(column) {
-            var columnInfo = findElement($scope.allColumns, function(columnInfo) {
+            var columnInfo = findElement($scope.table.allColumns, function(columnInfo) {
               return columnInfo.name === column.name;
             });
             if (columnInfo) {
@@ -564,5 +468,19 @@ angular.module('groongaAdminApp')
       }
 
       initialize();
-      fillOptions();
+      schemaLoader()
+        .then(function(_schema) {
+          schema = _schema;
+          var table = schema.tables[$scope.table.name];
+          angular.forEach(table.columns, function(column) {
+            addColumn(createColumnInfo(column));
+          });
+          applyTimeQueries();
+
+          var parameters = buildParameters();
+          if ($scope.parameters.offset) {
+            parameters.offset = $scope.parameters.offset;
+          }
+          select(parameters);
+        });
     }]);
