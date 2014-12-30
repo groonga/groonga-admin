@@ -1,0 +1,59 @@
+<div class="container-fluid" ng-controller="TableShowController">
+  <ol class="breadcrumb">
+    <li><a href="#/">Top</a></li>
+    <li><a href="#/tables/">Tables</a></li>
+    <li class="active">{{table.name}}</li>
+    <li><a href="#/tables/{{table.name}}/search">Search</a></li>
+  </ol>
+
+  <div class="sidebar">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Tables</h2>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li ng-repeat="table in tables track by $index">
+            <a href="#/tables/{{table.name}}">{{table.name}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="alert alert-warning" ng-show="message.length &gt; 0">
+      <p>{{message}}</p>
+    </div>
+
+    <h2>{{table.name}}</h2>
+    <div class="table-properties">
+      <table>
+        <tr ng-repeat="property in table.properties track by $index">
+          <th>{{property.name}}</th>
+          <td>{{property.value}}</td>
+        </tr>
+      </table>
+    </div>
+
+    <h2>Columns</h2>
+    <div class="table-columns">
+      <table>
+        <thead>
+          <tr>
+            <th ng-repeat="name in table.columnPropertyNames track by $index">
+              {{name}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="column in table.columns track by $index">
+            <td ng-repeat="name in table.columnPropertyNames track by $index">
+              {{column.properties[name]}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
