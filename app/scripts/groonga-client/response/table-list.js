@@ -21,7 +21,10 @@
   TableList.prototype.tables = function() {
     var parameters = this.parameters();
     return this.body().slice(1).map(function(tableProperties) {
-      var table = {};
+      var table = {
+        properties: {},
+        rawProperties: tableProperties
+      };
       parameters.forEach(function(parameter, index) {
         var name = parameter.name;
         var value = tableProperties[index];
@@ -33,7 +36,7 @@
           name = 'sources';
           break;
         }
-        table[name] = value;
+        table[name] = table.properties[name] = value;
       });
       table.isArray          = table.flags.indexOf('TABLE_NO_KEY')   != -1;
       table.isHashTable      = table.flags.indexOf('TABLE_HASH_KEY') != -1;

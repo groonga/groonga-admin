@@ -21,7 +21,10 @@
   ColumnList.prototype.columns = function() {
     var parameters = this.parameters();
     return this.body().slice(1).map(function(columnProperties) {
-      var column = {};
+      var column = {
+        properties: {},
+        rawProperties: columnProperties
+      };
       parameters.forEach(function(parameter, index) {
         var name = parameter.name;
         var value = columnProperties[index];
@@ -33,7 +36,7 @@
           name = 'sources';
           break;
         }
-        column[name] = value;
+        column[name] = column.properties[name] = value;
       });
       column.isScalar = column.flags.indexOf('COLUMN_SCALAR') != -1;
       column.isVector = column.flags.indexOf('COLUMN_VECTOR') != -1;
