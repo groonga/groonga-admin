@@ -518,7 +518,7 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('git:tag', 'Tag the current version', function () {
-    var news = grunt.file.read('doc/text/news.md', encoding: 'utf8');
+    var news = grunt.file.read('doc/text/news.md', {'encoding': 'utf8'});
     var releaseNote = '## ' + news.split(/^## /m)[1];
     var releaseNoteFileName = 'release-note.md';
     grunt.file.write(releaseNoteFileName, releaseNote);
