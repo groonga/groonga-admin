@@ -39,9 +39,12 @@ angular.module('groongaAdminApp')
           $scope.table.columns = columns.sort(function(column1, column2) {
             return (column1.name > column2.name) ? 1 : -1;
           });
-          if (columns.length > 0) {
-            var column = columns[columns.length - 1];
-            angular.forEach(column.properties, function(value, key) {
+          var representingColumn = columns.find(function(column) {
+            return column.name[0] !== '_';
+          });
+          representingColumn = representingColumn || columns[0];
+          if (representingColumn) {
+            angular.forEach(representingColumn.properties, function(value, key) {
               $scope.table.columnPropertyNames.push(key);
             });
           }
