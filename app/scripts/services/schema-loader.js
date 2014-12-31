@@ -93,37 +93,24 @@ angular.module('groongaAdminApp')
         table.columns[column.name] = column;
       }
 
-      function addIDColumn(table) {
-        var properties = {
-          id: table.id,
-          name: '_id',
-          type: 'fix',
-          flags: ['COLUMN_SCALAR', 'PERSISTENT'],
-          domain: table.name,
-          range: 'UInt32',
-          sources: []
-        };
-
-        var rawProperties = angular.copy(properties);
-        rawProperties.source = rawProperties.sources;
-        delete rawProperties.sources;
-        rawProperties.flags = rawProperties.flags.join('|');
-
-        var IDColumn = angular.copy(properties);
-        IDColumn.rawProperties = rawProperties;
-        IDColumn.properties = properties;
-
-        addColumn(table, IDColumn);
-      }
-
       function fetchColumns(table) {
         table.columns = {};
-
-        addIDColumn(table);
 
         return client.execute('column_list', {table: table.name})
           .success(function(response) {
             var columns = response.columns();
+
+            var rawIDColumn = [
+              table.id,                   // id
+              '_id',                      // name
+              table.path,                 // path
+              'fix',                      // type
+              'COLUMN_SCALAR|PERSISTENT', // flags
+              table.name,                 // domain
+              'UInt32',                   // range
+              []                          // source
+            ];
+            columns.unshift(response.parseRawColumn(rawIDColumn));
 
             columns.forEach(function(column) {
               addColumn(table, column);
