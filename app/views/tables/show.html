@@ -23,14 +23,16 @@
 
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h2 class="panel-title">Tables</h2>
+        <h2 class="panel-title">
+          <a href="#/tables/{{table.name}}/columns/">Columns</a>
+        </h2>
       </div>
       <div class="panel-body">
         <div class="list-group">
-          <a ng-repeat="table in tables track by $index"
+          <a ng-repeat="column in table.columns track by $index"
              class="list-group-item"
-             href="#/tables/{{table.name}}">
-            {{table.name}}
+             href="#/tables/{{table.name}}/columns/{{column.name}}">
+            {{column.name}}
           </a>
         </div>
       </div>
