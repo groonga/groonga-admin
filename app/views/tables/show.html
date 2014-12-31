@@ -5,19 +5,36 @@
     <li class="active"><a href="#/tables/{{table.name}}">{{table.name}}</a></li>
   </ol>
 
-  <div class="content">
+  <div class="sidebar">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Actions</h2>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item">
+            <a href="#/tables/{{table.name}}/search">
+              <span class="glyphicon glyphicon-search"></span>
+              Search
+            </a>
+          </li>
+          <li class="list-group-item">
+            <button type="button" ng-click="remove()">
+              <span class="glyphicon glyphicon-remove"></span>
+              Remove
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
     <div class="alert alert-warning" ng-show="message.length &gt; 0">
       <p>{{message}}</p>
     </div>
 
-    <h2>
-      Table: {{table.name}}
-      <a href="#/tables/{{table.name}}/search">
-        <span class="badge">
-          <span class="glyphicon glyphicon-search"></span>
-        </span>
-      </a>
-    </h2>
+    <h2>Table: {{table.name}}</h2>
     <div class="table-properties">
       <table>
         <tr>

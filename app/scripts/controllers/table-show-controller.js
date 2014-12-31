@@ -9,15 +9,35 @@
  */
 angular.module('groongaAdminApp')
   .controller('TableShowController', [
-    '$scope', '$routeParams', '$filter', 'schemaLoader',
-    function ($scope, $routeParams, $filter, schemaLoader) {
+    '$scope', '$routeParams', '$http', '$location', 'schemaLoader',
+    function ($scope, $routeParams, $http, $location, schemaLoader) {
       var schema;
+      var client = new GroongaClient($http);
 
       function initialize() {
         $scope.table = {
           name: $routeParams.table,
           columns: []
         };
+        $scope.remove = remove;
+      }
+
+      function remove() {
+        if (!window.confirm('Really remove the table?')) {
+          return;
+        }
+
+        var request = client.execute('table_remove', {name: $scope.table.name});
+        request.success(function(response) {
+          console.log(response);
+          if (response.isRemoved()) {
+            schemaLoader().reload();
+            $location.url('/tables/');
+          } else {
+            var errorMessage = response.errorMessage();
+            $scope.message = 'Failed to remove the table: ' + errorMessage;
+          }
+        });
       }
 
       initialize();
