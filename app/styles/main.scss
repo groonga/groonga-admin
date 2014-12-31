@@ -3,6 +3,8 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
 
+/* Layout */
+
 .sidebar {
   @extend .col-md-2;
 
@@ -26,6 +28,8 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 .content {
   @extend .col-md-12;
 }
+
+/* For each page */
 
 .search-form {
   @extend .form-inline;
