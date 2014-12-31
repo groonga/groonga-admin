@@ -3,7 +3,6 @@
     <li><a href="#/">Top</a></li>
     <li><a href="#/tables/">Tables</a></li>
     <li><a href="#/tables/{{column.table.name}}">{{column.table.name}}</a></li>
-    <li><a href="#/tables/{{column.table.name}}/columns/">Columns</a></li>
     <li class="active">
       <a href="#/tables/{{column.table.name}}/columns/{{column.name}}">
         {{column.name}}
@@ -11,29 +10,12 @@
     </li>
   </ol>
 
-  <div class="sidebar">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h2 class="panel-title">Columns</h2>
-      </div>
-      <div class="panel-body">
-        <div class="list-group">
-          <a ng-repeat="c in column.table.columns track by $index"
-             class="list-group-item"
-             href="#/tables/{{column.table.name}}/columns/{{c.name}}">
-            {{c.name}}
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="main-content">
+  <div class="content">
     <div class="alert alert-warning" ng-show="message.length &gt; 0">
       <p>{{message}}</p>
     </div>
 
-    <h2>{{column.name}}</h2>
+    <h2>Column: {{column.table.name}}.{{column.name}}</h2>
     <div class="column-properties">
       <table>
         <tr ng-repeat="property in column.properties track by $index">
