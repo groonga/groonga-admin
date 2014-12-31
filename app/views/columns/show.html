@@ -18,9 +18,33 @@
     <h2>Column: {{column.table.name}}.{{column.name}}</h2>
     <div class="column-properties">
       <table>
-        <tr ng-repeat="property in column.properties track by $index">
-          <th>{{property.name}}</th>
-          <td>{{property.value}}</td>
+        <tr>
+          <th>ID</th>
+          <td>{{column.id}}</td>
+        </tr>
+        <tr>
+          <th>Table</th>
+          <td><a href="#/tables/{{column.domain}}">{{column.domain}}</a></td>
+        </tr>
+        <tr>
+          <th>Name</th>
+          <td>{{column.name}}</td>
+        </tr>
+        <tr>
+          <th>Type</th>
+          <td>{{column.type}}</td>
+        </tr>
+        <tr>
+          <th>Value type</th>
+          <td>{{column.range}}</td>
+        </tr>
+        <tr>
+          <th>Value size type</th>
+          <td>{{column.sizeType}}</td>
+        </tr>
+        <tr>
+          <th>Path</th>
+          <td>{{column.path}}</td>
         </tr>
       </table>
     </div>

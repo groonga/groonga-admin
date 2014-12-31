@@ -16,10 +16,8 @@ angular.module('groongaAdminApp')
       function initialize() {
         $scope.column = {
           name: $routeParams.column,
-          properties: [],
           table: {
-            name: $routeParams.table,
-            columns: []
+            name: $routeParams.table
           }
         };
       }
@@ -31,12 +29,6 @@ angular.module('groongaAdminApp')
 
           var table = schema.tables[$scope.column.table.name];
           var column = table.columns[$scope.column.name];
-          angular.forEach(column.properties, function(value, key) {
-            $scope.column.properties.push({name: key, value: value});
-          });
-
-          angular.forEach(table.columns, function(value) {
-            $scope.column.table.columns.push(value);
-          });
+          angular.extend($scope.column, column);
         });
     }]);
