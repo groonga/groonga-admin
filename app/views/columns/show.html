@@ -17,13 +17,13 @@
         <h2 class="panel-title">Columns</h2>
       </div>
       <div class="panel-body">
-        <ul>
-          <li ng-repeat="c in column.table.columns track by $index">
-            <a href="#/tables/{{column.table.name}}/columns/{{c.name}}">
-              {{c.name}}
-            </a>
-          </li>
-        </ul>
+        <div class="list-group">
+          <a ng-repeat="c in column.table.columns track by $index"
+             class="list-group-item"
+             href="#/tables/{{column.table.name}}/columns/{{c.name}}">
+            {{c.name}}
+          </a>
+        </div>
       </div>
     </div>
   </div>

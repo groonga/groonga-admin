@@ -12,11 +12,13 @@
         <h2 class="panel-title">Tables</h2>
       </div>
       <div class="panel-body">
-        <ul>
-          <li ng-repeat="table in tables track by $index">
-            <a href="#/tables/{{table.name}}">{{table.name}}</a>
-          </li>
-        </ul>
+        <div class="list-group">
+          <a ng-repeat="table in tables track by $index"
+             class="list-group-item"
+             href="#/tables/{{table.name}}">
+            {{table.name}}
+          </a>
+        </div>
       </div>
     </div>
   </div>
