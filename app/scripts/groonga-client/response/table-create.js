@@ -19,6 +19,6 @@
   };
 
   TableCreate.prototype.isCreated = function() {
-    return this.isSuccess() && this.body() === true;
+    return this.isSuccess() && this.body();
   };
 })();
