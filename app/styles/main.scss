@@ -74,6 +74,29 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
   }
 }
 
+.table-form {
+  @extend .form-horizontal;
+
+  label {
+    @extend .col-md-1;
+  }
+
+  input,
+  select {
+    @extend .col-md-11;
+  }
+
+  .form-button {
+    @extend .col-md-offset-1;
+    @extend .col-md-11;
+  }
+
+  button[type=submit] {
+    @extend .btn;
+    @extend .btn-default;
+  }
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */

@@ -1,0 +1,81 @@
+<div class="container-fluid" ng-controller="TableNewController">
+  <ol class="breadcrumb">
+    <li><a href="#/">Top</a></li>
+    <li class="active"><a href="#/tables/">Tables</a></li>
+  </ol>
+
+  <div class="content">
+    <div class="alert alert-warning" ng-show="message.length &gt; 0">
+      <p>{{message}}</p>
+    </div>
+
+    <h2>Create a new table</h2>
+    <form name="tableForm" class="table-form" ng-submit="submit()">
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.name.$invalid}">
+        <label for="name" class="control-label">Name</label>
+        <input id="name"
+               name="name"
+               type="text"
+               class="form-control"
+               ng-model="parameters.name"
+               required>
+      </div>
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.type.$invalid}">
+        <label for="type" class="control-label">Type</label>
+        <select id="type"
+                name="type"
+                type="select"
+                class="form-control"
+                ng-model="parameters.type"
+                ng-options="type.label for (name, type) in availableTypes">
+        </select>
+      </div>
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.keyType.$invalid}">
+        <label for="key-type" class="control-label">Key type</label>
+        <input id="key-type"
+               name="keyType"
+               type="text"
+               class="form-control"
+               ng-model="parameters.keyType"
+               ng-disabled="parameters.type === availableTypes.array">
+      </div>
+      <!--
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.normalizer.$invalid}">
+        <label for="normalizer" class="control-label">Normalizer</label>
+        <input id="normalizer"
+               name="normalizer"
+               class="form-control"
+               type="text"
+               ng-model="parameters.normalizer">
+      </div>
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.tokenizer.$invalid}">
+        <label for="tokenizer" class="control-label">Tokenizer</label>
+        <input id="tokenizer"
+               name="tokenizer"
+               type="text"
+               class="form-control"
+               ng-model="parameters.tokenizer">
+      </div>
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.tokenFilteres.$invalid}">
+        <label for="token-filters" class="control-label">Token filters</label>
+        <input id="token-filters"
+               name="tokenFilters"
+               type="text"
+               class="form-control"
+               ng-model="parameters.tokenFilters">
+      </div>
+      -->
+      <div class="form-group">
+        <div class="form-button">
+          <button type="submit">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

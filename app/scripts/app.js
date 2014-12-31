@@ -29,6 +29,10 @@ angular
         templateUrl: 'views/tables/index.html',
         controller: 'TableIndexController'
       })
+      .when('/tables/_new', {
+        templateUrl: 'views/tables/new.html',
+        controller: 'TableNewController'
+      })
       .when('/tables/:table/', {
         templateUrl: 'views/tables/show.html',
         controller: 'TableShowController'
