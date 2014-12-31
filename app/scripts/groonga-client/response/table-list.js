@@ -43,6 +43,17 @@
       table.isPatriciaTrie    = table.flags.indexOf('TABLE_PAT_KEY')  != -1;
       table.isDoubleArrayTrie = table.flags.indexOf('TABLE_DAT_KEY')  != -1;
       table.hasKey = !table.isArray;
+      if (table.isArray) {
+        table.type = 'array';
+      } else if (table.isHashTable) {
+        table.type = 'hash table';
+      } else if (table.isPatriciaTrie) {
+        table.type = 'patricia trie';
+      } else if (table.isDoubleArrayTrie) {
+        table.type = 'double array trie';
+      } else {
+        table.type = 'unknown';
+      }
       return table;
     });
   };
