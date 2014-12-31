@@ -19,7 +19,6 @@ angular.module('groongaAdminApp')
           properties: [],
           columns: []
         };
-        $scope.tables = [];
       }
 
       initialize();
@@ -37,14 +36,6 @@ angular.module('groongaAdminApp')
           });
           $scope.table.columns = columns.sort(function(column1, column2) {
             return (column1.name > column2.name) ? 1 : -1;
-          });
-
-          var tables = [];
-          angular.forEach(schema.tables, function(value) {
-            tables.push(value);
-          });
-          $scope.tables = tables.sort(function(table1, table2) {
-            return (table1.name > table2.name) ? 1 : -1;
           });
         });
     }]);
