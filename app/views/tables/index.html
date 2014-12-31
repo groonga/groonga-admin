@@ -4,41 +4,43 @@
     <li class="active"><a href="#/tables/">Tables</a></li>
   </ol>
 
-  <div class="alert alert-warning" ng-show="message.length &gt; 0">
-    <p>{{message}}</p>
-  </div>
+  <div class="content">
+    <div class="alert alert-warning" ng-show="message.length &gt; 0">
+      <p>{{message}}</p>
+    </div>
 
-  <h2>Tables</h2>
-  <div class="tables">
-    <table>
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>name</th>
-          <th>type</th>
-          <th>value type</th>
-          <th>normalizer</th>
-          <th>tokenizer</th>
-          <th>token filters</th>
-          <th>path</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="table in tables track by $index">
-          <td>{{table.id}}</td>
-          <td>
-            <a href="#/tables/{{table.name}}">
-              {{table.name}}
-            </a>
-          </td>
-          <td>{{table.type}}</td>
-          <td>{{table.range}}</td>
-          <td>{{table.normalizer}}</td>
-          <td>{{table.tokenizer}}</td>
-          <td>{{table.token_filters}}</td>
-          <td>{{table.path}}</td>
-        </tr>
-      </tbody>
-    </table>
+    <h2>Tables</h2>
+    <div class="tables">
+      <table>
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>type</th>
+            <th>value type</th>
+            <th>normalizer</th>
+            <th>tokenizer</th>
+            <th>token filters</th>
+            <th>path</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="table in tables track by $index">
+            <td>{{table.id}}</td>
+            <td>
+              <a href="#/tables/{{table.name}}">
+                {{table.name}}
+              </a>
+            </td>
+            <td>{{table.type}}</td>
+            <td>{{table.range}}</td>
+            <td>{{table.normalizer}}</td>
+            <td>{{table.tokenizer}}</td>
+            <td>{{table.token_filters}}</td>
+            <td>{{table.path}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

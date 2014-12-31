@@ -23,6 +23,10 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
   @extend .col-md-10;
 }
 
+.content {
+  @extend .col-md-12;
+}
+
 .search-form {
   @extend .form-inline;
 
