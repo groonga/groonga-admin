@@ -40,7 +40,8 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 
 .table-search-result,
 .table-properties,
-.table-columns {
+.table-columns,
+.column-properties {
   @extend .table-responsive;
 
   table {

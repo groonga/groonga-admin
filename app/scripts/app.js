@@ -33,6 +33,10 @@ angular
         templateUrl: 'views/tables/search.html',
         controller: 'TableSearchController'
       })
+      .when('/tables/:table/columns/:column', {
+        templateUrl: 'views/columns/show.html',
+        controller: 'ColumnShowController'
+      })
       .otherwise({
         redirectTo: '/'
       });
