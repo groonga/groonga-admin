@@ -1,11 +1,17 @@
 <div class="container-fluid" ng-controller="TopController">
   <ol class="breadcrumb">
-    <li class="active">Top</li>
+    <li class="active"><a href="#/">Top</a></li>
   </ol>
   <h2>Tables</h2>
   <div class="list-group">
-    <a ng-repeat="table in tables track by $index"
-       class="list-group-item"
-       href="#/tables/{{table.name}}/search">{{table.name}}</a>
+    <div ng-repeat="table in tables track by $index"
+         class="list-group-item">
+      <a href="#/tables/{{table.name}}/search">
+        <span class="badge">
+          <span class="glyphicon glyphicon-search"></span>
+        </span>
+      </a>
+      <a href="#/tables/{{table.name}}">{{table.name}}</a>
+    </div>
   </div>
 </div>
