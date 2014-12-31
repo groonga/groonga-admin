@@ -38,9 +38,9 @@
         }
         table[name] = table.properties[name] = value;
       });
-      table.isArray          = table.flags.indexOf('TABLE_NO_KEY')   != -1;
-      table.isHashTable      = table.flags.indexOf('TABLE_HASH_KEY') != -1;
-      table.isPatriciaTrie   = table.flags.indexOf('TABLE_PAT_KEY')  != -1;
+      table.isArray           = table.flags.indexOf('TABLE_NO_KEY')   != -1;
+      table.isHashTable       = table.flags.indexOf('TABLE_HASH_KEY') != -1;
+      table.isPatriciaTrie    = table.flags.indexOf('TABLE_PAT_KEY')  != -1;
       table.isDoubleArrayTrie = table.flags.indexOf('TABLE_DAT_KEY')  != -1;
       table.hasKey = !table.isArray;
       return table;
