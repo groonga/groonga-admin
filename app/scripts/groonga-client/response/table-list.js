@@ -32,8 +32,8 @@
         case 'flags':
           value = value.split('|');
           break;
-        case 'source':
-          name = 'sources';
+        case 'default_tokenizer':
+          name = 'tokenizer';
           break;
         }
         table[name] = table.properties[name] = value;
