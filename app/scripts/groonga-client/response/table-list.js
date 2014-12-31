@@ -35,6 +35,9 @@
         case 'default_tokenizer':
           name = 'tokenizer';
           break;
+        case 'token_filters':
+          name = 'tokenFilters';
+          break;
         }
         table[name] = table.properties[name] = value;
       });
