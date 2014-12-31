@@ -47,9 +47,37 @@
     <h2>{{table.name}}</h2>
     <div class="table-properties">
       <table>
-        <tr ng-repeat="property in table.properties track by $index">
-          <th>{{property.name}}</th>
-          <td>{{property.value}}</td>
+        <tr>
+          <th>ID</th>
+          <td>{{table.id}}</td>
+        </tr>
+        <tr>
+          <th>Type</th>
+          <td>{{table.type}}</td>
+        </tr>
+        <tr>
+          <th>Key type</th>
+          <td>{{table.domain}}</td>
+        </tr>
+        <tr>
+          <th>Value type</th>
+          <td>{{table.range}}</td>
+        </tr>
+        <tr>
+          <th>Normalizer</th>
+          <td>{{table.normalizer}}</td>
+        </tr>
+        <tr>
+          <th>Tokenizer</th>
+          <td>{{table.normalizer}}</td>
+        </tr>
+        <tr>
+          <th>Token filters</th>
+          <td>{{table.tokenFilters}}</td>
+        </tr>
+        <tr>
+          <th>path</th>
+          <td>{{table.path}}</td>
         </tr>
       </table>
     </div>
