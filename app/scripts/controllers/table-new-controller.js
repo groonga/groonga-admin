@@ -53,7 +53,7 @@ angular.module('groongaAdminApp')
             $location.url('/tables/' + parameters.name);
           } else {
             var errorMessage = response.errorMessage();
-            $scope.message = 'Failed to create table: ' + errorMessage;
+            $scope.message = 'Failed to create the table: ' + errorMessage;
           }
         });
       }
