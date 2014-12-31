@@ -5,46 +5,19 @@
     <li class="active"><a href="#/tables/{{table.name}}">{{table.name}}</a></li>
   </ol>
 
-  <div class="sidebar">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h2 class="panel-title">Actions</h2>
-      </div>
-      <div class="panel-body">
-        <div class="list-group">
-          <a class="list-group-item"
-             href="#/tables/{{table.name}}/search">
-            <span class="glyphicon glyphicon-search"></span>
-            Search
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h2 class="panel-title">
-          <a href="#/tables/{{table.name}}/columns/">Columns</a>
-        </h2>
-      </div>
-      <div class="panel-body">
-        <div class="list-group">
-          <a ng-repeat="column in table.columns track by $index"
-             class="list-group-item"
-             href="#/tables/{{table.name}}/columns/{{column.name}}">
-            {{column.name}}
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="main-content">
+  <div class="content">
     <div class="alert alert-warning" ng-show="message.length &gt; 0">
       <p>{{message}}</p>
     </div>
 
-    <h2>{{table.name}}</h2>
+    <h2>
+      {{table.name}}
+      <a href="#/tables/{{table.name}}/search">
+        <span class="badge">
+          <span class="glyphicon glyphicon-search"></span>
+        </span>
+      </a>
+    </h2>
     <div class="table-properties">
       <table>
         <tr>
