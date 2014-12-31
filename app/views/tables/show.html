@@ -43,16 +43,28 @@
       <table>
         <thead>
           <tr>
-            <th ng-repeat="name in table.columnPropertyNames track by $index">
-              {{name}}
-            </th>
+            <th>id</th>
+            <th>name</th>
+            <th>flags</th>
+            <th>domain</th>
+            <th>range</th>
+            <th>sources</th>
+            <th>path</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="column in table.columns track by $index">
-            <td ng-repeat="name in table.columnPropertyNames track by $index">
-              {{column.properties[name]}}
+            <td>{{column.id}}</td>
+            <td>
+              <a href="#/tables/{{table.name}}/columns/{{column.name}}">
+                {{column.name}}
+              </a>
             </td>
+            <td>{{column.flags}}</td>
+            <td>{{column.domain}}</td>
+            <td>{{column.range}}</td>
+            <td>{{column.sources}}</td>
+            <td>{{column.path}}</td>
           </tr>
         </tbody>
       </table>
