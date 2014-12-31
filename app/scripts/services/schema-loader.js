@@ -95,6 +95,7 @@ angular.module('groongaAdminApp')
 
       function addIDColumn(table) {
         var properties = {
+          id: table.id,
           name: '_id',
           type: 'fix',
           flags: ['COLUMN_SCALAR', 'PERSISTENT'],
