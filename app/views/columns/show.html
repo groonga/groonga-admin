@@ -10,7 +10,25 @@
     </li>
   </ol>
 
-  <div class="content">
+  <div class="sidebar">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Actions</h2>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li class="list-group-item">
+            <button type="button" ng-click="remove()">
+              <span class="glyphicon glyphicon-remove"></span>
+              Remove
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
     <div class="alert alert-warning" ng-show="message.length &gt; 0">
       <p>{{message}}</p>
     </div>

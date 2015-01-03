@@ -9,9 +9,10 @@
  */
 angular.module('groongaAdminApp')
   .controller('ColumnShowController', [
-    '$scope', '$routeParams', '$filter', 'schemaLoader',
-    function ($scope, $routeParams, $filter, schemaLoader) {
+    '$scope', '$routeParams', '$location', '$http', 'schemaLoader',
+    function ($scope, $routeParams, $location, $http, schemaLoader) {
       var schema;
+      var client = new GroongaClient($http);
 
       function initialize() {
         $scope.column = {
@@ -20,6 +21,29 @@ angular.module('groongaAdminApp')
             name: $routeParams.table
           }
         };
+        $scope.remove = remove;
+      }
+
+      function remove() {
+        if (!window.confirm('Really remove the column?')) {
+          return;
+        }
+
+        var parameters = {
+          table: $scope.column.table.name,
+          name: $scope.column.name
+        };
+        var request = client.execute('column_remove', parameters);
+        request.success(function(response) {
+          console.log(response);
+          if (response.isRemoved()) {
+            schemaLoader().reload();
+            $location.url('/tables/' + $scope.column.table.name + '/');
+          } else {
+            var errorMessage = response.errorMessage();
+            $scope.message = 'Failed to remove the column: ' + errorMessage;
+          }
+        });
       }
 
       initialize();
