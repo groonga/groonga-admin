@@ -1,0 +1,62 @@
+<div class="container-fluid" ng-controller="ColumnNewController">
+  <ol class="breadcrumb">
+    <li><a href="#/">Top</a></li>
+    <li><a href="#/tables/">Tables</a></li>
+    <li><a href="#/tables/{{table.name}}">{{table.name}}</a></li>
+  </ol>
+
+  <div class="content">
+    <div class="alert alert-warning" ng-show="message.length &gt; 0">
+      <p>{{message}}</p>
+    </div>
+
+    <h2>{{table.name}}: Create a new column</h2>
+    <form name="tableForm" class="table-form" ng-submit="submit()">
+      <div class="form-group">
+        <label for="table" class="control-label">Table</label>
+        <input id="table"
+               name="table"
+               type="text"
+               class="form-control"
+               ng-model="table.name"
+               disabled="true"
+               required>
+      </div>
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.name.$invalid}">
+        <label for="name" class="control-label">Name</label>
+        <input id="name"
+               name="name"
+               type="text"
+               class="form-control"
+               ng-model="column.name"
+               required>
+      </div>
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.type.$invalid}">
+        <label for="type" class="control-label">Type</label>
+        <select id="type"
+                name="type"
+                type="select"
+                class="form-control"
+                ng-model="column.type"
+                ng-options="type.label for (name, type) in availableTypes">
+        </select>
+      </div>
+      <div class="form-group"
+           ng-class="{'has-error': tableForm.keyType.$invalid}">
+        <label for="value-type" class="control-label">Value type</label>
+        <input id="value-type"
+               name="valueType"
+               type="text"
+               class="form-control"
+               ng-model="column.valueType">
+      </div>
+      <div class="form-group">
+        <div class="form-button">
+          <button type="submit">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

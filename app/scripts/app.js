@@ -41,6 +41,10 @@ angular
         templateUrl: 'views/tables/search.html',
         controller: 'TableSearchController'
       })
+      .when('/tables/:table/columns/_new', {
+        templateUrl: 'views/columns/new.html',
+        controller: 'ColumnNewController'
+      })
       .when('/tables/:table/columns/:column', {
         templateUrl: 'views/columns/show.html',
         controller: 'ColumnShowController'
