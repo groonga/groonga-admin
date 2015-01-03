@@ -17,7 +17,7 @@ angular
     'ngSanitize',
     'ngTouch',
     'ui.bootstrap',
-    'ui.bootstrap.datetimepicker'
+    'ui.bootstrap-slider'
   ])
   .config(function ($routeProvider) {
     $routeProvider

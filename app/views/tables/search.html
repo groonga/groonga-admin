@@ -108,49 +108,18 @@
       </div>
       <div class="form-group time-query"
            ng-repeat="timeColumn in table.timeColumns track by $index">
-        {{timeColumn.name}}:
-        <div class="dropdown">
-          <div class="input-group">
-            <div class="input-group-btn">
-              <button class="btn btn-default dropdown-toggle"
-                      type="button"
-                      role="button"
-                      data-toggle="dropdown"
-                      aria-expanded="true">
-                <span class="glyphicon glyphicon-calendar"></span>
-              </button>
-              <div class="dropdown-menu" role="menu">
-                <datetimepicker ng-model="timeColumn.start"
-                                ng-change="incrementalSearch()"/>
-              </div>
-            </div>
-            <input type="datetime-local"
-                   class="form-control"
-                   ng-model="timeColumn.start"
-                   ng-change="incrementalSearch()">
-          </div>
-        </div>
-        -
-        <div class="dropdown">
-          <div class="input-group">
-            <div class="input-group-btn">
-              <button class="btn btn-default dropdown-toggle"
-                      type="button"
-                      role="button"
-                      data-toggle="dropdown"
-                      aria-expanded="true">
-                <span class="glyphicon glyphicon-calendar"></span>
-              </button>
-              <div class="dropdown-menu" role="menu">
-                <datetimepicker ng-model="timeColumn.end"
-                                ng-change="incrementalSearch()"/>
-              </div>
-            </div>
-            <input type="datetime-local"
-                   class="form-control"
-                   ng-model="timeColumn.end"
-                   ng-change="incrementalSearch()">
-          </div>
+        <div class="input-group">
+          {{timeColumn.name}}:
+          <slider ng-model="timeColumn.range"
+                  min="0"
+                  step="1"
+                  max="100"
+                  formater="timeColumn.formater"
+                  range="true"
+                  tooltip="always"
+                  tooltipsplit="true"></slider>
+          <select ng-options="unit.label for unit in orderedTimeColumnUnits"
+                  ng-model="timeColumn.unit"></select>
         </div>
       </div>
     </form>
