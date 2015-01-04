@@ -111,7 +111,7 @@
         <div class="input-group">
           {{timeColumn.name}}:
           <slider ng-model="timeColumn.range"
-                  ng-change="timeColumn.onRangeChanged()"
+                  ng-change="timeColumn.onRangeChange()"
                   min="0"
                   step="1"
                   max="100"
@@ -121,7 +121,7 @@
                   tooltipsplit="true"></slider>
           <select ng-options="unit.label for unit in orderedTimeColumnUnits"
                   ng-model="timeColumn.unit"
-                  ng-change="timeColumn.onUnitChanged()"></select>
+                  ng-change="timeColumn.onUnitChange()"></select>
         </div>
       </div>
     </form>
