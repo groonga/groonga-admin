@@ -353,6 +353,10 @@ angular.module('groongaAdminApp')
             var date = timeColumnInfo.unit.percentToDate(value / 100);
             return date.toLocaleString();
           },
+          onRangeChanged: function() {
+            timeColumnInfo.syncFromRange();
+            incrementalSearch();
+          },
           onUnitChanged: function() {
             timeColumnInfo.updateRangeByDateRange(timeColumnInfo.start,
                                                   timeColumnInfo.end);
