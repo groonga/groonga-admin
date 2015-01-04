@@ -21,6 +21,7 @@
   "globals": {
     "angular": false,
     "GroongaClient": false,
-    "GroongaResponse": false
+    "GroongaResponse": false,
+    "TimeUnit": false
   }
 }

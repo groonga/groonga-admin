@@ -13,8 +13,6 @@ angular.module('groongaAdminApp')
     function ($scope, $routeParams, $location, $http, $filter, schemaLoader) {
       var schema;
       var client = new GroongaClient($http);
-      var timeColumnUnits;
-      var orderedTimeColumnUnits;
 
       function findElement(array, finder) {
         var i, length;
@@ -33,7 +31,7 @@ angular.module('groongaAdminApp')
       }
 
       function initialize() {
-        $scope.orderedTimeColumnUnits = orderedTimeColumnUnits;
+        $scope.orderedTimeColumnUnits = TimeUnit.getOrderedUnits();
 
         $scope.table = {
           name: $routeParams.table,
@@ -307,123 +305,6 @@ angular.module('groongaAdminApp')
         };
       }
 
-      timeColumnUnits = {
-        hour: {
-          label: 'Hour',
-          baseTimeInMilliseconds: 60 * 60 * 1000,
-          baseDate: function() {
-            var now = new Date();
-            return new Date(now.getFullYear(),
-                            now.getMonth(),
-                            now.getDate(),
-                            now.getHours());
-          }
-        },
-        day: {
-          label: 'Day',
-          baseTimeInMilliseconds: 24 * 60 * 60 * 1000,
-          baseDate: function() {
-            var now = new Date();
-            return new Date(now.getFullYear(),
-                            now.getMonth(),
-                            now.getDate());
-          }
-        },
-        week: {
-          label: 'Week',
-          baseTimeInMilliseconds: 7 * 24 * 60 * 60 * 1000,
-          baseDate: function() {
-            var now = new Date();
-            return new Date(now.getFullYear(),
-                            now.getMonth(),
-                            now.getDate() - 4);
-          }
-        },
-        month: {
-          label: 'Month',
-          baseTimeInMilliseconds: 12 * 24 * 60 * 60 * 1000,
-          baseDate: function() {
-            var now = new Date();
-            return new Date(now.getFullYear(),
-                            now.getMonth());
-          }
-        },
-        year: {
-          label: 'Year',
-          baseTimeInMilliseconds: 365 * 24 * 60 * 60 * 1000,
-          baseDate: function() {
-            var now = new Date();
-            return new Date(now.getFullYear());
-          }
-        },
-        decade: {
-          label: 'Decade',
-          baseTimeInMilliseconds: 10 * 365 * 24 * 60 * 60 * 1000,
-          baseDate: function() {
-            var now = new Date();
-            return new Date(now.getFullYear() - 10);
-          }
-        }
-      };
-
-      orderedTimeColumnUnits = [];
-      angular.forEach(timeColumnUnits, function(unit) {
-        orderedTimeColumnUnits.push(unit);
-      });
-      orderedTimeColumnUnits.sort(function(unit1, unit2) {
-        return unit1.baseTimeInMilliseconds - unit2.baseTimeInMilliseconds;
-      });
-
-      function dateInUnit(date, unit) {
-        var baseDate = unit.baseDate();
-        var baseTime = baseDate.getTime();
-        var time = date.getTime();
-        return (baseTime <= time &&
-                time <= (baseTime * unit.baseTimeInMilliseconds));
-      }
-
-      function dateRangeToUnit(start, end) {
-        if (!start && !end) {
-          return timeColumnUnits.day;
-        }
-
-        var unit = findElement(orderedTimeColumnUnits, function(unit) {
-          if (start) {
-            if (!dateInUnit(start, unit)) {
-              return false;
-            }
-          }
-          if (end) {
-            if (!dateInUnit(end, unit)) {
-              return false;
-            }
-          }
-          return true;
-        });
-        if (!unit) {
-          unit = timeColumnUnits.decade;
-        }
-        return unit;
-      }
-
-      function timeRangeValueToDate(value, unit) {
-        var baseDate = unit.baseDate();
-        var date;
-        if (value === 0) {
-          date = baseDate;
-        } else {
-          date = new Date();
-          date.setTime(baseDate.getTime() +
-                       unit.baseTimeInMilliseconds * (value / 100.0));
-        }
-        return date;
-      }
-
-      function dateToTimeRangeValue(date, unit) {
-        var diffTime = date.getTime() - unit.baseDate().getTime();
-        return (diffTime / unit.baseTimeInMilliseconds) * 100;
-      }
-
       function addTimeColumn(columnInfo) {
         if (columnInfo.type !== 'Time') {
           return;
@@ -435,38 +316,38 @@ angular.module('groongaAdminApp')
           startIncluded: true,
           end: null,
           endIncluded: true,
-          unit: timeColumnUnits.day,
+          unit: TimeUnit.units.day,
           range: [0, 0],
           syncFromRange: function() {
             if (this.range[0] === 0 && this.range[1] === 0) {
               return;
             }
-            this.start = timeRangeValueToDate(this.range[0], this.unit);
-            this.end = timeRangeValueToDate(this.range[1], this.unit);
+            this.start = this.unit.percentToDate(this.range[0] / 100);
+            this.end = this.unit.percentToDate(this.range[1] / 100);
           },
           syncToRange: function() {
-            this.unit = dateRangeToUnit(this.start, this.end);
+            this.unit = TimeUnit.findByDateRange(this.start, this.end);
             if (this.start && this.end) {
               this.range = [
-                dateToTimeRangeValue(this.start, this.unit),
-                dateToTimeRangeValue(this.end, this.unit)
+                this.unit.dateToPercent(this.start) * 100,
+                this.unit.dateToPercent(this.end) * 100
               ];
             } else if (this.start) {
               this.range = [
-                dateToTimeRangeValue(this.start, this.unit),
+                this.unit.dateToPercent(this.start) * 100,
                 100
               ];
             } else if (this.end) {
               this.range = [
                 0,
-                dateToTimeRangeValue(this.end, this.unit)
+                this.unit.dateToPercent(this.end) * 100
               ];
             } else {
               this.range = [0, 0];
             }
           },
           formater: function(value) {
-            var date = timeRangeValueToDate(value, timeColumnInfo.unit);
+            var date = timeColumnInfo.unit.percentToDate(value / 100);
             return date.toLocaleString();
           }
         };
