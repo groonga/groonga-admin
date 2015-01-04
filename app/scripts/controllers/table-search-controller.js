@@ -327,20 +327,23 @@ angular.module('groongaAdminApp')
           },
           syncToRange: function() {
             this.unit = TimeUnit.findByDateRange(this.start, this.end);
-            if (this.start && this.end) {
+            this.updateRangeByDateRange(this.start, this.end);
+          },
+          updateRangeByDateRange: function(start, end) {
+            if (start && end) {
               this.range = [
-                this.unit.dateToPercent(this.start) * 100,
-                this.unit.dateToPercent(this.end) * 100
+                this.unit.dateToPercent(start) * 100,
+                this.unit.dateToPercent(end) * 100
               ];
-            } else if (this.start) {
+            } else if (start) {
               this.range = [
-                this.unit.dateToPercent(this.start) * 100,
+                this.unit.dateToPercent(start) * 100,
                 100
               ];
-            } else if (this.end) {
+            } else if (end) {
               this.range = [
                 0,
-                this.unit.dateToPercent(this.end) * 100
+                this.unit.dateToPercent(end) * 100
               ];
             } else {
               this.range = [0, 0];
@@ -349,6 +352,10 @@ angular.module('groongaAdminApp')
           formater: function(value) {
             var date = timeColumnInfo.unit.percentToDate(value / 100);
             return date.toLocaleString();
+          },
+          onUnitChanged: function() {
+            timeColumnInfo.updateRangeByDateRange(timeColumnInfo.start,
+                                                  timeColumnInfo.end);
           }
         };
         $scope.table.timeColumns.push(timeColumnInfo);

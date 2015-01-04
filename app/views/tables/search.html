@@ -119,7 +119,8 @@
                   tooltip="always"
                   tooltipsplit="true"></slider>
           <select ng-options="unit.label for unit in orderedTimeColumnUnits"
-                  ng-model="timeColumn.unit"></select>
+                  ng-model="timeColumn.unit"
+                  ng-change="timeColumn.onUnitChanged()"></select>
         </div>
       </div>
     </form>
