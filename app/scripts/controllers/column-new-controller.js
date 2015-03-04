@@ -32,6 +32,7 @@ angular.module('groongaAdminApp')
             flag: 'COLUMN_INDEX'
           }
         };
+        $scope.availableValueTypes = {};
         $scope.column = {
           type: $scope.availableTypes.scalar,
           sources: []
@@ -60,9 +61,21 @@ angular.module('groongaAdminApp')
         });
       }
 
+      function collectAvailableValueTypes() {
+        var types = [];
+        angular.forEach(schema.types, function(type) {
+          types.push(type.name);
+        });
+        angular.forEach(schema.tables, function(table) {
+          types.push(table.name);
+        });
+        return types.sort();
+      }
+
       initialize();
       schemaLoader()
         .then(function(_schema) {
           schema = _schema;
+          $scope.availableValueTypes = collectAvailableValueTypes();
         });
     }]);

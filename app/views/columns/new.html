@@ -44,13 +44,15 @@
         </select>
       </div>
       <div class="form-group"
-           ng-class="{'has-error': tableForm.keyType.$invalid}">
+           ng-class="{'has-error': tableForm.valueType.$invalid}">
         <label for="value-type" class="control-label">Value type</label>
-        <input id="value-type"
-               name="valueType"
-               type="text"
-               class="form-control"
-               ng-model="column.valueType">
+        <select id="value-type"
+                name="valueType"
+                type="select"
+                class="form-control"
+                ng-model="column.valueType"
+                ng-options="type for (index, type) in availableValueTypes">
+        </select>
       </div>
       <div class="form-group">
         <div class="form-button">
