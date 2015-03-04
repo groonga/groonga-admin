@@ -73,7 +73,7 @@ angular.module('groongaAdminApp')
           {
             name: 'WGS84GeoPoint'
           }
-        ]
+        ];
         schema.types = {};
         angular.forEach(builtinTypes, function(type) {
           schema.types[type.name] = type;
