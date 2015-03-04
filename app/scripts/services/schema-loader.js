@@ -21,7 +21,7 @@ angular.module('groongaAdminApp')
         var newSchema = {};
         fillTypes(newSchema);
         return newSchema;
-      };
+      }
 
       function fillTypes(schema) {
         var builtinTypes = [
