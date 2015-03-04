@@ -522,7 +522,7 @@ module.exports = function (grunt) {
     var releaseNote = '## ' + news.split(/^## /m)[1];
     var releaseNoteFileName = 'release-note.md';
     grunt.file.write(releaseNoteFileName, releaseNote);
-    shell.exec('git --annotate ' +
+    shell.exec('git tag --annotate ' +
                '--file ' + releaseNoteFileName + ' ' +
                pkg.version);
     grunt.file.delete(releaseNoteFileName);
