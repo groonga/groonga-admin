@@ -241,7 +241,7 @@ module.exports = function (grunt) {
           html: {
             steps: {
               js: ['concat'],
-              css: ['cssmin']
+              css: ['concat']
             },
             post: {}
           }
@@ -258,19 +258,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // The following *-min tasks will produce minified files in the dist folder
-    // By default, your `index.html`'s <!-- Usemin block --> will take care of
-    // minification. These next options are pre-configured if you do not wish
-    // to use the Usemin blocks.
-    // cssmin: {
-    //   dist: {
-    //     files: {
-    //       '<%= yeoman.dist %>/styles/main.css': [
-    //         '.tmp/styles/{,*/}*.css'
-    //       ]
-    //     }
-    //   }
-    // },
     // concat: {
     //   dist: {}
     // },
@@ -455,7 +442,6 @@ module.exports = function (grunt) {
     'concat',
     'ngAnnotate',
     'copy:dist',
-    'cssmin',
     'filerev',
     'usemin'
   ]);
