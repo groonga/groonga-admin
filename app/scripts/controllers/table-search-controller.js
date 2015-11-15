@@ -64,6 +64,8 @@ angular.module('groongaAdminApp')
         $scope.clear  = clear;
         $scope.toggleSort = toggleSort;
         $scope.selectDrilldown = selectDrilldown;
+        $scope.toggleAllColumns = toggleAllColumns;
+        $scope.toggleAllColumnsChecked = true;
       }
 
       function packColumns(columns) {
@@ -209,6 +211,13 @@ angular.module('groongaAdminApp')
           column.iconClass = 'glyphicon-sort';
           break;
         }
+      }
+
+      function toggleAllColumns() {
+        $scope.table.allColumns.forEach(function(columnInfo) {
+          columnInfo.output = $scope.toggleAllColumnsChecked;
+        });
+        incrementalSearch();
       }
 
       function toggleSort(column) {
