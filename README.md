@@ -71,9 +71,9 @@ on running Groonga Admin.
 
 Run Groonga Admin:
 
-    % grunt server
+    % grunt serve
 
 If you want to use Groonga HTTP server run on `groonga.example.com`,
 run Groonga Admin as by the following command line:
 
-    % GROONGA_HOST=groonga.example.com grunt server
+    % GROONGA_HOST=groonga.example.com grunt serve
