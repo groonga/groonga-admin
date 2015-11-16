@@ -34,6 +34,9 @@
               <tr>
                 <th>Name</th>
                 <th>
+                  <input type="checkbox"
+                         ng-model="toggleAllColumnsChecked"
+                         ng-change="toggleAllColumns()">
                   <span title="Show"
                         class="glyphicon glyphicon-eye-open"></span>
                 </th>
