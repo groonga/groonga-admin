@@ -61,6 +61,7 @@ angular.module('groongaAdminApp')
 
         $scope.search = search;
         $scope.incrementalSearch = incrementalSearch;
+        $scope.clearQuery = clearQuery;
         $scope.clear = clear;
         $scope.toggleSort = toggleSort;
         $scope.selectDrilldown = selectDrilldown;
@@ -193,6 +194,11 @@ angular.module('groongaAdminApp')
 
       function incrementalSearch() {
         select(buildParameters());
+      }
+
+      function clearQuery() {
+        $scope.parameters.query = '';
+        incrementalSearch();
       }
 
       function clear() {

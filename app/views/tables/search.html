@@ -107,6 +107,12 @@
                  class="form-control"
                  ng-model="parameters.query"
                  ng-change="incrementalSearch()">
+          <span class="input-group-btn">
+            <button ng-click="clearQuery()" class="btn btn-default">
+              <span title="Clear query"
+                    class="glyphicon glyphicon-erase"></span>
+            </button>
+          </span>
         </div>
       </div>
       <div class="form-group time-query"
