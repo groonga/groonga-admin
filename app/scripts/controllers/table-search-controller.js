@@ -212,9 +212,6 @@ angular.module('groongaAdminApp')
       }
 
       function updateAutoRefresh() {
-        console.log('called');
-        console.log(autoRefreshPromise);
-        console.log($scope.autoRefreshIntervalInSeconds);
         if (autoRefreshPromise) {
           $interval.cancel(autoRefreshPromise);
           autoRefreshPromise = null;
