@@ -1,5 +1,27 @@
 # News
 
+## 0.9.4: 2015-11-23
+
+### Improvements
+
+  * Stopped to minify.
+  * Stopped to use CDN.
+  * search: Improved bookmark icon.
+    [GitHub#8] [Patch by HAYASHI Kentaro]
+  * search: Added output all columns or no column toggle.
+    [GitHub#9] [Patch by HAYASHI Kentaro]
+  * search: Added "clear query" button.
+  * search: Supported auto refresh.
+  * search: Improved search condition from drilldown result link.
+
+### Fixes
+
+  * search: Fixed styles for time range search and drilldown result.
+
+### Thanks
+
+  * HAYASHI Kentaro
+
 ## 0.9.3: 2015-03-04
 
 ### Improvements
