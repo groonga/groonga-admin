@@ -9,10 +9,23 @@
  */
 angular.module('groongaAdminApp')
   .controller('TableSearchController', [
-    '$scope', '$routeParams', '$location', '$http', '$filter', 'schemaLoader',
-    function ($scope, $routeParams, $location, $http, $filter, schemaLoader) {
+    '$scope',
+    '$routeParams',
+    '$location',
+    '$http',
+    '$filter',
+    '$interval',
+    'schemaLoader',
+    function ($scope,
+              $routeParams,
+              $location,
+              $http,
+              $filter,
+              $interval,
+              schemaLoader) {
       var schema;
       var client = new GroongaClient($http);
+      var autoRefreshPromise = null;
 
       function findElement(array, finder) {
         var i, length;
@@ -58,9 +71,11 @@ angular.module('groongaAdminApp')
         }
         $scope.currentPage = computeCurrentPage($scope.parameters.offset || 0);
         $scope.maxNPages = 10;
+        $scope.autoRefreshIntervalInSeconds = 0;
 
         $scope.search = search;
         $scope.incrementalSearch = incrementalSearch;
+        $scope.updateAutoRefresh = updateAutoRefresh;
         $scope.clearQuery = clearQuery;
         $scope.clear = clear;
         $scope.toggleSort = toggleSort;
@@ -194,6 +209,21 @@ angular.module('groongaAdminApp')
 
       function incrementalSearch() {
         select(buildParameters());
+      }
+
+      function updateAutoRefresh() {
+        console.log('called');
+        console.log(autoRefreshPromise);
+        console.log($scope.autoRefreshIntervalInSeconds);
+        if (autoRefreshPromise) {
+          $interval.cancel(autoRefreshPromise);
+          autoRefreshPromise = null;
+        }
+        if ($scope.autoRefreshIntervalInSeconds > 0) {
+          autoRefreshPromise =
+            $interval(incrementalSearch,
+                      $scope.autoRefreshIntervalInSeconds * 1000);
+        }
       }
 
       function clearQuery() {

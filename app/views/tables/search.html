@@ -25,6 +25,22 @@
       </div>
 
       <div class="panel-heading">
+        <h2 class="panel-title">Auto refresh</h2>
+      </div>
+      <div class="panel-body">
+        <div class="input-group">
+          <!--span class="input-group-addon">
+              <span class="glyphicon glyphicon-time"></span>
+          </span-->
+          <input type="number"
+                 class="form-control"
+                 ng-model="autoRefreshIntervalInSeconds"
+                 ng-change="updateAutoRefresh()">
+          <span class="input-group-addon">sec</span>
+        </div>
+      </div>
+
+      <div class="panel-heading">
         <h2 class="panel-title">Columns</h2>
       </div>
       <div class="panel-body">
