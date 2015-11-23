@@ -38,11 +38,14 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
     display: block;
     margin-bottom: 15px;
   }
-}
 
-.time-query {
-  .dropdown {
-    display: inline-block;
+  .time-query {
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    .dropdown {
+      display: inline-block;
+    }
   }
 }
 
