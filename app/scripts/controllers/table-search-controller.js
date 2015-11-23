@@ -287,11 +287,6 @@ angular.module('groongaAdminApp')
         var column = findElement($scope.table.allColumns, function(column) {
           return column.name === key;
         });
-        if (column) {
-          if (column.valueType.isReferenceType) {
-            queryKey += '._key';
-          }
-        }
 
         var escapedValue;
         if (typeof value === 'string') {
