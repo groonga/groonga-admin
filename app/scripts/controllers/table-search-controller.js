@@ -337,7 +337,6 @@ angular.module('groongaAdminApp')
 
         return {
           name: name,
-          type: column.range,
           output: output,
           drilldown: drilldown,
           sort: sort,
@@ -347,7 +346,7 @@ angular.module('groongaAdminApp')
       }
 
       function addTimeColumn(columnInfo) {
-        if (columnInfo.type !== 'Time') {
+        if (columnInfo.valueType.name !== 'Time') {
           return;
         }
 
