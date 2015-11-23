@@ -215,7 +215,11 @@ angular.module('groongaAdminApp')
 
       function toggleAllColumns() {
         $scope.table.allColumns.forEach(function(columnInfo) {
-          columnInfo.output = $scope.toggleAllColumnsChecked;
+          if (columnInfo.name === '_id') {
+            columnInfo.output = true;
+          } else {
+            columnInfo.output = $scope.toggleAllColumnsChecked;
+          }
         });
         incrementalSearch();
       }
