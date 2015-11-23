@@ -61,7 +61,7 @@ angular.module('groongaAdminApp')
 
         $scope.search = search;
         $scope.incrementalSearch = incrementalSearch;
-        $scope.clear  = clear;
+        $scope.clear = clear;
         $scope.toggleSort = toggleSort;
         $scope.selectDrilldown = selectDrilldown;
         $scope.toggleAllColumns = toggleAllColumns;
