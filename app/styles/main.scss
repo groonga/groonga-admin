@@ -6,7 +6,7 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 /* Layout */
 
 .sidebar {
-  @extend .col-md-2;
+  @extend .col-md-3;
 
   .table-columns {
     @extend .table-responsive;
@@ -22,7 +22,7 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 }
 
 .main-content {
-  @extend .col-md-10;
+  @extend .col-md-9;
 }
 
 .content {
