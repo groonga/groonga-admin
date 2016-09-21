@@ -95,17 +95,53 @@ angular.module('groongaAdminApp')
         return typeName in schema.tables;
       }
 
-      function resolveTable(table) {
-        table.keyType = {
-          name: table.domain,
-          isTextType: isTextType(table.domain)
-        };
+      function buildTable(rawTable) {
+        var table = {};
+        table.id           = 0; // XXX it exists in a table_list response but missing in a schema response.
+        table.name         = rawTable.name;
+        table.path         = ''; // XXX it exists in a table_list response but missing in a schema response.
+        table.valueType    = rawTable.value_type && rawTable.value_type.name
+        table.tokenizer    = rawTable.tokenizer && rawTable.tokenizer.name;
+        table.normalizer   = rawTable.normalizer && rawTable.normalizer.name;
+        table.type         = rawTable.type;
+
+        table.flags = [];
+        if (rawTable.command &&
+            rawTable.command.arguments &&
+            rawTable.command.arguments.flags)
+          table.flags = rawTable.command.arguments.flags.split('|');
+
+        table.tokenFilters = '';
+        if (rawTable.token_filters)
+          table.tokenFilters = rawTable.token_filters.join('|'); // XXX what is the correct delimiter?
+
+        table.keyType = null;
+        if (rawTable.key_type) {
+          table.keyType = {
+            name: rawTable.key_type.name,
+            isTextType: isTextType(rawTable.key_type.name)
+          };
+        }
+
+        table.isArray           = table.type == 'array';
+        table.isHashTable       = table.type == 'hash table';
+        table.isPatriciaTrie    = table.type == 'patricia trie';
+        table.isDoubleArrayTrie = table.type == 'double attay trie';
+        table.hasKey            = !table.isArray;
+
+        table.range  = table.valueType; // for backward compatibility
+        table.domain = table.keyType && table.keyType.name; // for backward compatibility
+
+        return table;
       }
 
-      function resolveTables(schema) {
-        angular.forEach(schema.tables, function(table) {
-          resolveTable(table);
+      function buildTables(response) {
+        var rawTables = response.tables();
+        var tables = {};
+        angular.forEach(rawTables, function(table, name) {
+          tables[name] = buildTable(table);
         });
+        return tables;
       }
 
       function resolveColumn(schema, column) {
@@ -181,12 +217,9 @@ angular.module('groongaAdminApp')
 
       function fetchTables(schema) {
         schema.tables = {};
-        return client.execute('table_list')
+        return client.execute('schema')
           .success(function(response) {
-            response.tables().forEach(function(table) {
-              schema.tables[table.name] = table;
-            });
-            resolveTables(schema);
+            schema.tables = buildTables(response);
 
             var fetchColumnsTasks = [];
             angular.forEach(schema.tables, function(table) {
