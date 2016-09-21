@@ -184,34 +184,65 @@ angular.module('groongaAdminApp')
         });
       }
 
-      function addColumn(table, column) {
-        column.table = table;
+      function buildColumn(table, rawColumn) {
+        var column = {};
+        column.id       = 0; // XXX it exists in a table_list response but missing in a schema response.
+        column.name     = rawColumn.name;
+        column.path     = ''; // XXX it exists in a table_list response but missing in a schema response.
+        column.type     = rawColumn.type;
+        column.sizeType = rawColumn.type;
+        column.sources  = rawColumn.sources.join('|'); // XXX what is the correct delimiter?
+        column.table    = table;
+
+        column.flags = [];
+        if (rawColumn.command &&
+            rawColumn.command.arguments &&
+            rawColumn.command.arguments.flags)
+          column.flags = rawColumn.command.arguments.flags.split('|');
+
+        column.valeuType = null;
+        if (column.value_type)
+          column.valueType = column.value_type.name;
+
+        column.isScalar = column.type == 'scalar';
+        column.isVector = column.type == 'vector';
+        column.isIndex  = column.type == 'index';
+
+        column.range  = column.valueType; // for backward compatibility
+        column.domain = table.name; // for backward compatibility
+        column.source = column.sources; // for backward compatibility
+
         column.indexes = [];
-        table.columns[column.name] = column;
+        return column;
+      }
+
+      function buildColumns(table) {
+        var columns = {};
+
+        columns._id = {
+          name:   '_id',
+          id:     table.id,
+          path:   table.path,
+          type:   'fix',
+          flags:  ['COLUMN_SCALAR', 'PERSISTENT'],
+          domain: table.name,
+          range:  'UInt32',
+          source: null
+        };
+
+        angular.forEach(columns, function(column, name) {
+          columns[name] = buildColumn(table, column);
+        });
+
+        return columns;
       }
 
       function fetchColumns(table) {
         table.columns = {};
 
-        return client.execute('column_list', {table: table.name})
+        return client.execute('schema')
           .success(function(response) {
-            var columns = response.columns();
-
-            var rawIDColumn = [
-              table.id,                   // id
-              '_id',                      // name
-              table.path,                 // path
-              'fix',                      // type
-              'COLUMN_SCALAR|PERSISTENT', // flags
-              table.name,                 // domain
-              'UInt32',                   // range
-              []                          // source
-            ];
-            columns.unshift(response.parseRawColumn(rawIDColumn));
-
-            columns.forEach(function(column) {
-              addColumn(table, column);
-            });
+            table.columns = buildColumns(response.tables()[table.name]);
           });
       }
 
