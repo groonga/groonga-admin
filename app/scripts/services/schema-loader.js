@@ -96,9 +96,11 @@ angular.module('groongaAdminApp')
       }
 
       function resolveTable(table) {
+        if (!table.key_type)
+          return;
         table.keyType = {
-          name: table.domain,
-          isTextType: isTextType(table.domain)
+          name: table.key_type.name,
+          isTextType: isTextType(table.key_type.name)
         };
       }
 
