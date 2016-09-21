@@ -181,11 +181,9 @@ angular.module('groongaAdminApp')
 
       function fetchTables(schema) {
         schema.tables = {};
-        return client.execute('table_list')
+        return client.execute('schema')
           .success(function(response) {
-            response.tables().forEach(function(table) {
-              schema.tables[table.name] = table;
-            });
+            schema.tables = response.tables();
             resolveTables(schema);
 
             var fetchColumnsTasks = [];
