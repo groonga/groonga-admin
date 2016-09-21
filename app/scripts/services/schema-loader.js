@@ -97,12 +97,39 @@ angular.module('groongaAdminApp')
 
       function buildTable(rawTable) {
         var table = {};
-        if (table.key_type) {
+        table.id           = 0; // XXX it exists in a table_list response but missing in a schema response.
+        table.name         = rawTable.name;
+        table.path         = ''; // XXX it exists in a table_list response but missing in a schema response.
+        table.flags        = [];
+        table.domain       = rawTable.key_type && rawTable.key_type.name;
+        table.range        = rawTable.value_type && rawTable.value_type.name
+        table.tokenizer    = rawTable.tokenizer && rawTable.tokenizer.name;
+        table.normalizer   = rawTable.normalizer && rawTable.normalizer.name;
+        table.tokenFilters = '';
+        table.type         = rawTable.type;
+        table.keyType      = null;
+
+        if (rawTable.command &&
+            rawTable.command.arguments &&
+            rawTable.command.arguments.flags)
+          table.flags = rawTable.command.arguments.flags.split('|');
+
+        if (rawTable.token_filters)
+          table.tokenFilters = rawTable.token_filters.join('|'); // XXX what is the correct delimiter?
+
+        if (rawTable.key_type) {
           table.keyType = {
             name: rawTable.key_type.name,
             isTextType: isTextType(rawTable.key_type.name)
           };
         }
+
+        table.isArray           = table.type == 'array';
+        table.isHashTable       = table.type == 'hash table';
+        table.isPatriciaTrie    = table.type == 'patricia trie';
+        table.isDoubleArrayTrie = table.type == 'double attay trie';
+        table.hasKey            = !table.isArray;
+
         return table;
       }
 
