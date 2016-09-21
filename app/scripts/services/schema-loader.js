@@ -100,23 +100,22 @@ angular.module('groongaAdminApp')
         table.id           = 0; // XXX it exists in a table_list response but missing in a schema response.
         table.name         = rawTable.name;
         table.path         = ''; // XXX it exists in a table_list response but missing in a schema response.
-        table.flags        = [];
-        table.domain       = rawTable.key_type && rawTable.key_type.name;
-        table.range        = rawTable.value_type && rawTable.value_type.name
+        table.valueType    = rawTable.value_type && rawTable.value_type.name
         table.tokenizer    = rawTable.tokenizer && rawTable.tokenizer.name;
         table.normalizer   = rawTable.normalizer && rawTable.normalizer.name;
-        table.tokenFilters = '';
         table.type         = rawTable.type;
-        table.keyType      = null;
 
+        table.flags = [];
         if (rawTable.command &&
             rawTable.command.arguments &&
             rawTable.command.arguments.flags)
           table.flags = rawTable.command.arguments.flags.split('|');
 
+        table.tokenFilters = '';
         if (rawTable.token_filters)
           table.tokenFilters = rawTable.token_filters.join('|'); // XXX what is the correct delimiter?
 
+        table.keyType = null;
         if (rawTable.key_type) {
           table.keyType = {
             name: rawTable.key_type.name,
@@ -129,6 +128,9 @@ angular.module('groongaAdminApp')
         table.isPatriciaTrie    = table.type == 'patricia trie';
         table.isDoubleArrayTrie = table.type == 'double attay trie';
         table.hasKey            = !table.isArray;
+
+        table.range  = table.valueType; // for backward compatibility
+        table.domain = table.keyType && table.keyType.name; // for backward compatibility
 
         return table;
       }
