@@ -199,7 +199,6 @@ angular.module('groongaAdminApp')
 
         column.range  = column.valueType && column.valueType.name; // for backward compatibility
         column.domain = rawTable.name; // for backward compatibility
-        column.source = column.sources; // for backward compatibility
 
         column.indexes = [];
         return column;
