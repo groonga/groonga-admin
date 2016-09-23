@@ -85,8 +85,8 @@ angular.module('groongaAdminApp')
 
       function buildTables(rawTables) {
         var tables = {};
-        angular.forEach(rawTables, function(table, name) {
-          tables[name] = buildTable(table);
+        angular.forEach(rawTables, function(rawTable, name) {
+          tables[name] = buildTable(rawTable);
         });
         return tables;
       }
