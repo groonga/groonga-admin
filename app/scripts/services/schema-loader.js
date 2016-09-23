@@ -91,10 +91,6 @@ angular.module('groongaAdminApp')
         }
       }
 
-      function isReferenceType(schema, typeName) {
-        return typeName in schema.tables;
-      }
-
       function buildTable(rawTable) {
         var table = {};
         table.id           = 0; // XXX it exists in a table_list response but missing in a schema response.
@@ -144,22 +140,6 @@ angular.module('groongaAdminApp')
         return tables;
       }
 
-      function resolveColumn(schema, column) {
-        column.valueType = {
-          name: column.range,
-          isTextType: isTextType(column.range),
-          isReferenceType: isReferenceType(schema, column.range)
-        };
-      }
-
-      function resolveColumns(schema) {
-        angular.forEach(schema.tables, function(table) {
-          angular.forEach(table.columns, function(column) {
-            resolveColumn(schema, column);
-          });
-        });
-      }
-
       function resolveIndex(schema, column) {
         var table = schema.tables[column.range];
         column.sources.forEach(function(source) {
@@ -184,34 +164,85 @@ angular.module('groongaAdminApp')
         });
       }
 
-      function addColumn(table, column) {
-        column.table = table;
+      function buildColumn(rawTable, rawColumn) {
+        var column = {};
+        column.id       = 0; // XXX it exists in a table_list response but missing in a schema response.
+        column.name     = rawColumn.name;
+        column.path     = ''; // XXX it exists in a table_list response but missing in a schema response.
+        column.type     = rawColumn.type;
+        column.sizeType = rawColumn.type;
+        column.table    = rawTable;
+
+        column.flags = [];
+        if (rawColumn.command &&
+            rawColumn.command.arguments &&
+            rawColumn.command.arguments.flags)
+          column.flags = rawColumn.command.arguments.flags.split('|');
+
+        column.sources = [];
+        if (rawColumn.sources)
+          column.sources = rawColumn.sources.map(function(source) {
+            return source.full_name.replace(/\._key$/, '');
+          });
+
+        column.valueType = null;
+        if (rawColumn.value_type)
+          column.valueType = {
+            name: rawColumn.value_type.name,
+            isTextType: isTextType(rawColumn.value_type.name),
+            isReferenceType: rawColumn.value_type.type == 'reference'
+          };
+
+        column.isScalar = column.type == 'scalar';
+        column.isVector = column.type == 'vector';
+        column.isIndex  = column.type == 'index';
+
+        column.range  = column.valueType && column.valueType.name; // for backward compatibility
+        column.domain = rawTable.name; // for backward compatibility
+
         column.indexes = [];
-        table.columns[column.name] = column;
+        return column;
+      }
+
+      function buildColumns(rawTable) {
+        var columns = {};
+
+        columns._id = {
+          name:    '_id',
+          id:      rawTable.id || 0,
+          path:    rawTable.path || '',
+          type:    'scalar',
+          flags:   ['COLUMN_SCALAR', 'PERSISTENT'],
+          domain:  rawTable.name,
+          range:   'UInt32',
+          sources: []
+        };
+
+        if (rawTable.type != 'array') {
+          columns._key = {
+            name:    '_key',
+            id:      rawTable.id || 0,
+            path:    '',
+            type:    'scalar',
+            flags:   ['COLUMN_SCALAR'],
+            domain:  rawTable.name,
+            range:   rawTable.key_type.name,
+            sources: [],
+            indexes: []
+          };
+        }
+
+        angular.forEach(rawTable.columns, function(rawColumn, name) {
+          columns[name] = buildColumn(rawTable, rawColumn);
+        });
+
+        return columns;
       }
 
       function fetchColumns(table) {
-        table.columns = {};
-
-        return client.execute('column_list', {table: table.name})
+        return client.execute('schema')
           .success(function(response) {
-            var columns = response.columns();
-
-            var rawIDColumn = [
-              table.id,                   // id
-              '_id',                      // name
-              table.path,                 // path
-              'fix',                      // type
-              'COLUMN_SCALAR|PERSISTENT', // flags
-              table.name,                 // domain
-              'UInt32',                   // range
-              []                          // source
-            ];
-            columns.unshift(response.parseRawColumn(rawIDColumn));
-
-            columns.forEach(function(column) {
-              addColumn(table, column);
-            });
+            table.columns = buildColumns(response.tables()[table.name]);
           });
       }
 
@@ -228,7 +259,6 @@ angular.module('groongaAdminApp')
 
             return $q.all(fetchColumnsTasks)
               .then(function() {
-                resolveColumns(schema);
                 resolveIndexes(schema);
                 fetched = true;
                 fetching = false;
