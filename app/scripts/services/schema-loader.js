@@ -247,8 +247,6 @@ angular.module('groongaAdminApp')
       }
 
       function fetchColumns(table) {
-        table.columns = {};
-
         return client.execute('schema')
           .success(function(response) {
             table.columns = buildColumns(response.tables()[table.name]);
