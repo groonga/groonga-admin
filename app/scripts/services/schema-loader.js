@@ -246,7 +246,7 @@ angular.module('groongaAdminApp')
           });
       }
 
-      function fetchTables(schema) {
+      function fetchSchema(schema) {
         schema.tables = {};
         return client.execute('schema')
           .success(function(response) {
@@ -284,7 +284,7 @@ angular.module('groongaAdminApp')
           loader = defer.promise;
         } else {
           fetching = true;
-          loader = fetchTables(schema);
+          loader = fetchSchema(schema);
         }
         loader.reload = function() {
           fetching = false;
