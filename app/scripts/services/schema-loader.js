@@ -204,11 +204,7 @@ angular.module('groongaAdminApp')
         return client.execute('schema')
           .success(function(response) {
             schema.types = buildTypes(response.types());
-
-            var rawTables = response.tables();
-
-            schema.tables = buildTables(rawTables);
-
+            schema.tables = buildTables(response.tables());
             resolveIndexes(schema);
             fetched = true;
             fetching = false;
