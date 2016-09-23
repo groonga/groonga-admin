@@ -216,7 +216,7 @@ angular.module('groongaAdminApp')
           flags:  ['COLUMN_SCALAR', 'PERSISTENT'],
           domain: rawTable.name,
           range:  'UInt32',
-          source: null
+          sources: []
         };
 
         if (rawTable.type != 'array') {
@@ -228,7 +228,7 @@ angular.module('groongaAdminApp')
             flags:   ['COLUMN_SCALAR'],
             domain:  rawTable.name,
             range:   rawTable.key_type.name,
-            source:  null,
+            sources: [],
             indexes: []
           };
         }
