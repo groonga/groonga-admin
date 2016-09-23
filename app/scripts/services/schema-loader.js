@@ -19,65 +19,17 @@ angular.module('groongaAdminApp')
 
       function createSchema() {
         var newSchema = {};
-        fillTypes(newSchema);
         return newSchema;
       }
 
-      function fillTypes(schema) {
-        var builtinTypes = [
-          {
-            name: 'Bool'
-          },
-          {
-            name: 'Int8'
-          },
-          {
-            name: 'UInt8'
-          },
-          {
-            name: 'Int16'
-          },
-          {
-            name: 'UInt16'
-          },
-          {
-            name: 'Int32'
-          },
-          {
-            name: 'UInt32'
-          },
-          {
-            name: 'Int64'
-          },
-          {
-            name: 'UInt64'
-          },
-          {
-            name: 'Float'
-          },
-          {
-            name: 'Time'
-          },
-          {
-            name: 'ShortText'
-          },
-          {
-            name: 'Text'
-          },
-          {
-            name: 'LongText'
-          },
-          {
-            name: 'TokyoGeoPoint'
-          },
-          {
-            name: 'WGS84GeoPoint'
-          }
-        ];
-        schema.types = {};
-        angular.forEach(builtinTypes, function(type) {
-          schema.types[type.name] = type;
+      function buildTypes(rawTypes) {
+        var types = {};
+        angular.forEach(rawTypes, function(rawType, name) {
+          types[name] = {
+            name: rawType.name
+          };
         });
+        return types;
       }
 
       function isTextType(typeName) {
@@ -128,38 +80,25 @@ angular.module('groongaAdminApp')
         table.range  = table.valueType; // for backward compatibility
         table.domain = table.keyType && table.keyType.name; // for backward compatibility
 
+        table.columns = buildColumns(rawTable);
+
         return table;
       }
 
-      function buildTables(response) {
-        var rawTables = response.tables();
+      function buildTables(rawTables) {
         var tables = {};
-        angular.forEach(rawTables, function(table, name) {
-          tables[name] = buildTable(table);
+        angular.forEach(rawTables, function(rawTable, name) {
+          tables[name] = buildTable(rawTable);
         });
         return tables;
-      }
-
-      function resolveIndex(schema, column) {
-        var table = schema.tables[column.range];
-        column.sources.forEach(function(source) {
-          var columnName;
-          if (source.indexOf('.') === -1) {
-            columnName = '_key';
-          } else {
-            columnName = source.split('.')[1];
-          }
-          var targetColumn = table.columns[columnName];
-          targetColumn.indexes.push(column);
-        });
       }
 
       function resolveIndexes(schema) {
         angular.forEach(schema.tables, function(table) {
           angular.forEach(table.columns, function(column) {
-            if (column.isIndex) {
-              resolveIndex(schema, column);
-            }
+            column.indexes = column.indexes.map(function(index) {
+              return schema.tables[index.table].columns[index.name];
+            });
           });
         });
       }
@@ -200,7 +139,7 @@ angular.module('groongaAdminApp')
         column.range  = column.valueType && column.valueType.name; // for backward compatibility
         column.domain = rawTable.name; // for backward compatibility
 
-        column.indexes = [];
+        column.indexes = rawColumn.indexes || [];
         return column;
       }
 
@@ -215,7 +154,8 @@ angular.module('groongaAdminApp')
           flags:   ['COLUMN_SCALAR', 'PERSISTENT'],
           domain:  rawTable.name,
           range:   'UInt32',
-          sources: []
+          sources: [],
+          indexes: []
         };
 
         if (rawTable.type != 'array') {
@@ -228,7 +168,7 @@ angular.module('groongaAdminApp')
             domain:  rawTable.name,
             range:   rawTable.key_type.name,
             sources: [],
-            indexes: []
+            indexes: rawTable.indexes || []
           };
         }
 
@@ -246,28 +186,20 @@ angular.module('groongaAdminApp')
           });
       }
 
-      function fetchTables(schema) {
+      function fetchSchema(schema) {
         schema.tables = {};
         return client.execute('schema')
           .success(function(response) {
-            schema.tables = buildTables(response);
-
-            var fetchColumnsTasks = [];
-            angular.forEach(schema.tables, function(table) {
-              fetchColumnsTasks.push(fetchColumns(table));
+            schema.types = buildTypes(response.types());
+            schema.tables = buildTables(response.tables());
+            resolveIndexes(schema);
+            fetched = true;
+            fetching = false;
+            waitingDeferes.forEach(function(defer) {
+              defer.resolve(schema);
             });
-
-            return $q.all(fetchColumnsTasks)
-              .then(function() {
-                resolveIndexes(schema);
-                fetched = true;
-                fetching = false;
-                waitingDeferes.forEach(function(defer) {
-                  defer.resolve(schema);
-                });
-                waitingDeferes = [];
-                return schema;
-              });
+            waitingDeferes = [];
+            return schema;
           });
       }
 
@@ -288,7 +220,7 @@ angular.module('groongaAdminApp')
           loader = defer.promise;
         } else {
           fetching = true;
-          loader = fetchTables(schema);
+          loader = fetchSchema(schema);
         }
         loader.reload = function() {
           fetching = false;
