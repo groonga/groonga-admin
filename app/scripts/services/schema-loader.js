@@ -91,10 +91,6 @@ angular.module('groongaAdminApp')
         }
       }
 
-      function isReferenceType(schema, typeName) {
-        return typeName in schema.tables;
-      }
-
       function buildTable(rawTable) {
         var table = {};
         table.id           = 0; // XXX it exists in a table_list response but missing in a schema response.
@@ -142,22 +138,6 @@ angular.module('groongaAdminApp')
           tables[name] = buildTable(table);
         });
         return tables;
-      }
-
-      function resolveColumn(schema, column) {
-        column.valueType = {
-          name: column.range,
-          isTextType: isTextType(column.range),
-          isReferenceType: isReferenceType(schema, column.range)
-        };
-      }
-
-      function resolveColumns(schema) {
-        angular.forEach(schema.tables, function(table) {
-          angular.forEach(table.columns, function(column) {
-            resolveColumn(schema, column);
-          });
-        });
       }
 
       function resolveIndex(schema, column) {
@@ -280,7 +260,6 @@ angular.module('groongaAdminApp')
 
             return $q.all(fetchColumnsTasks)
               .then(function() {
-                resolveColumns(schema);
                 resolveIndexes(schema);
                 fetched = true;
                 fetching = false;
