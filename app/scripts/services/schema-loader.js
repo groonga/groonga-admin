@@ -252,13 +252,10 @@ angular.module('groongaAdminApp')
           .success(function(response) {
             schema.tables = buildTables(response);
 
-            var fetchColumnsTasks = [];
             angular.forEach(schema.tables, function(table) {
-              fetchColumnsTasks.push(fetchColumns(table));
+              table.columns = buildColumns(response.tables()[table.name]);
             });
 
-            return $q.all(fetchColumnsTasks)
-              .then(function() {
                 resolveIndexes(schema);
                 fetched = true;
                 fetching = false;
@@ -267,7 +264,6 @@ angular.module('groongaAdminApp')
                 });
                 waitingDeferes = [];
                 return schema;
-              });
           });
       }
 
