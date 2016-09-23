@@ -256,14 +256,14 @@ angular.module('groongaAdminApp')
               table.columns = buildColumns(response.tables()[table.name]);
             });
 
-                resolveIndexes(schema);
-                fetched = true;
-                fetching = false;
-                waitingDeferes.forEach(function(defer) {
-                  defer.resolve(schema);
-                });
-                waitingDeferes = [];
-                return schema;
+            resolveIndexes(schema);
+            fetched = true;
+            fetching = false;
+            waitingDeferes.forEach(function(defer) {
+              defer.resolve(schema);
+            });
+            waitingDeferes = [];
+            return schema;
           });
       }
 
