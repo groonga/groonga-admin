@@ -131,8 +131,7 @@ angular.module('groongaAdminApp')
         return table;
       }
 
-      function buildTables(response) {
-        var rawTables = response.tables();
+      function buildTables(rawTables) {
         var tables = {};
         angular.forEach(rawTables, function(table, name) {
           tables[name] = buildTable(table);
@@ -250,10 +249,12 @@ angular.module('groongaAdminApp')
         schema.tables = {};
         return client.execute('schema')
           .success(function(response) {
-            schema.tables = buildTables(response);
+            var rawTables = response.tables();
+
+            schema.tables = buildTables(rawTables);
 
             angular.forEach(schema.tables, function(table) {
-              table.columns = buildColumns(response.tables()[table.name]);
+              table.columns = buildColumns(rawTables[table.name]);
             });
 
             resolveIndexes(schema);
