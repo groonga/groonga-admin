@@ -93,26 +93,12 @@ angular.module('groongaAdminApp')
         return tables;
       }
 
-      function resolveIndex(schema, column) {
-        var table = schema.tables[column.range];
-        column.sources.forEach(function(source) {
-          var columnName;
-          if (source.indexOf('.') === -1) {
-            columnName = '_key';
-          } else {
-            columnName = source.split('.')[1];
-          }
-          var targetColumn = table.columns[columnName];
-          targetColumn.indexes.push(column);
-        });
-      }
-
       function resolveIndexes(schema) {
         angular.forEach(schema.tables, function(table) {
           angular.forEach(table.columns, function(column) {
-            if (column.isIndex) {
-              resolveIndex(schema, column);
-            }
+            column.indexes = column.indexes.map(function(index) {
+              return schema.tables[index.table].columns[index.name];
+            });
           });
         });
       }
@@ -153,7 +139,7 @@ angular.module('groongaAdminApp')
         column.range  = column.valueType && column.valueType.name; // for backward compatibility
         column.domain = rawTable.name; // for backward compatibility
 
-        column.indexes = [];
+        column.indexes = rawColumn.indexes || [];
         return column;
       }
 
@@ -168,7 +154,8 @@ angular.module('groongaAdminApp')
           flags:   ['COLUMN_SCALAR', 'PERSISTENT'],
           domain:  rawTable.name,
           range:   'UInt32',
-          sources: []
+          sources: [],
+          indexes: []
         };
 
         if (rawTable.type != 'array') {
@@ -181,7 +168,7 @@ angular.module('groongaAdminApp')
             domain:  rawTable.name,
             range:   rawTable.key_type.name,
             sources: [],
-            indexes: []
+            indexes: rawTable.indexes || []
           };
         }
 
