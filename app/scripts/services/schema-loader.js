@@ -19,65 +19,17 @@ angular.module('groongaAdminApp')
 
       function createSchema() {
         var newSchema = {};
-        fillTypes(newSchema);
         return newSchema;
       }
 
-      function fillTypes(schema) {
-        var builtinTypes = [
-          {
-            name: 'Bool'
-          },
-          {
-            name: 'Int8'
-          },
-          {
-            name: 'UInt8'
-          },
-          {
-            name: 'Int16'
-          },
-          {
-            name: 'UInt16'
-          },
-          {
-            name: 'Int32'
-          },
-          {
-            name: 'UInt32'
-          },
-          {
-            name: 'Int64'
-          },
-          {
-            name: 'UInt64'
-          },
-          {
-            name: 'Float'
-          },
-          {
-            name: 'Time'
-          },
-          {
-            name: 'ShortText'
-          },
-          {
-            name: 'Text'
-          },
-          {
-            name: 'LongText'
-          },
-          {
-            name: 'TokyoGeoPoint'
-          },
-          {
-            name: 'WGS84GeoPoint'
-          }
-        ];
-        schema.types = {};
-        angular.forEach(builtinTypes, function(type) {
-          schema.types[type.name] = type;
+      function buildTypes(rawTypes) {
+        var types = {};
+        angular.forEach(rawTypes, function(rawType, name) {
+          types[name] = {
+            name: rawType.name
+          };
         });
+        return types;
       }
 
       function isTextType(typeName) {
@@ -249,6 +201,8 @@ angular.module('groongaAdminApp')
         schema.tables = {};
         return client.execute('schema')
           .success(function(response) {
+            schema.types = buildTypes(response.types());
+
             var rawTables = response.tables();
 
             schema.tables = buildTables(rawTables);

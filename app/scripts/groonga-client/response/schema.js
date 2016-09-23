@@ -9,6 +9,10 @@
   Schema.prototype = Object.create(GroongaClient.Response.Base.prototype);
   Schema.prototype.constructor = Schema;
 
+  Schema.prototype.types = function() {
+    return this.body().types;
+  };
+
   Schema.prototype.tables = function() {
     return this.body().tables;
   };
