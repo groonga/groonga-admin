@@ -209,13 +209,13 @@ angular.module('groongaAdminApp')
         var columns = {};
 
         columns._id = {
-          name:   '_id',
-          id:     rawTable.id || 0,
-          path:   rawTable.path || '',
-          type:   'scalar',
-          flags:  ['COLUMN_SCALAR', 'PERSISTENT'],
-          domain: rawTable.name,
-          range:  'UInt32',
+          name:    '_id',
+          id:      rawTable.id || 0,
+          path:    rawTable.path || '',
+          type:    'scalar',
+          flags:   ['COLUMN_SCALAR', 'PERSISTENT'],
+          domain:  rawTable.name,
+          range:   'UInt32',
           sources: []
         };
 
