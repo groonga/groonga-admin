@@ -182,7 +182,7 @@ angular.module('groongaAdminApp')
         column.sources = [];
         if (rawColumn.sources)
           column.sources = rawColumn.sources.map(function(source) {
-            return source.full_name;
+            return source.full_name.replace(/\._key$/, '');
           });
 
         column.valueType = null;
