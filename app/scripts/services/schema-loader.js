@@ -80,6 +80,8 @@ angular.module('groongaAdminApp')
         table.range  = table.valueType; // for backward compatibility
         table.domain = table.keyType && table.keyType.name; // for backward compatibility
 
+        table.columns = buildColumns(rawTable);
+
         return table;
       }
 
@@ -206,10 +208,6 @@ angular.module('groongaAdminApp')
             var rawTables = response.tables();
 
             schema.tables = buildTables(rawTables);
-
-            angular.forEach(schema.tables, function(table) {
-              table.columns = buildColumns(rawTables[table.name]);
-            });
 
             resolveIndexes(schema);
             fetched = true;
