@@ -191,7 +191,6 @@ angular.module('groongaAdminApp')
         column.path     = ''; // XXX it exists in a table_list response but missing in a schema response.
         column.type     = rawColumn.type;
         column.sizeType = rawColumn.type;
-        column.sources  = rawColumn.sources.join('|'); // XXX what is the correct delimiter?
         column.table    = rawTable;
 
         column.flags = [];
@@ -199,6 +198,12 @@ angular.module('groongaAdminApp')
             rawColumn.command.arguments &&
             rawColumn.command.arguments.flags)
           column.flags = rawColumn.command.arguments.flags.split('|');
+
+        column.sources = [];
+        if (rawColumn.sources)
+          column.sources = rawColumn.sources.map(function(source) {
+            return source.full_name;
+          });
 
         column.valueType = null;
         if (rawColumn.value_type)
