@@ -184,7 +184,7 @@ angular.module('groongaAdminApp')
         });
       }
 
-      function buildColumn(table, rawColumn) {
+      function buildColumn(rawTable, rawColumn) {
         var column = {};
         column.id       = 0; // XXX it exists in a table_list response but missing in a schema response.
         column.name     = rawColumn.name;
@@ -192,7 +192,7 @@ angular.module('groongaAdminApp')
         column.type     = rawColumn.type;
         column.sizeType = rawColumn.type;
         column.sources  = rawColumn.sources.join('|'); // XXX what is the correct delimiter?
-        column.table    = table;
+        column.table    = rawTable;
 
         column.flags = [];
         if (rawColumn.command &&
@@ -200,38 +200,42 @@ angular.module('groongaAdminApp')
             rawColumn.command.arguments.flags)
           column.flags = rawColumn.command.arguments.flags.split('|');
 
-        column.valeuType = null;
-        if (column.value_type)
-          column.valueType = column.value_type.name;
+        column.valueType = null;
+        if (rawColumn.value_type)
+          column.valueType = {
+            name: rawColumn.value_type.name,
+            isTextType: isTextType(rawColumn.value_type.name),
+            isReferenceType: rawColumn.value_type.type == 'reference'
+          };
 
         column.isScalar = column.type == 'scalar';
         column.isVector = column.type == 'vector';
         column.isIndex  = column.type == 'index';
 
-        column.range  = column.valueType; // for backward compatibility
-        column.domain = table.name; // for backward compatibility
+        column.range  = column.valueType && column.valueType.name; // for backward compatibility
+        column.domain = rawTable.name; // for backward compatibility
         column.source = column.sources; // for backward compatibility
 
         column.indexes = [];
         return column;
       }
 
-      function buildColumns(table) {
+      function buildColumns(rawTable) {
         var columns = {};
 
         columns._id = {
           name:   '_id',
-          id:     table.id,
-          path:   table.path,
+          id:     rawTable.id || 0,
+          path:   rawTable.path || '',
           type:   'fix',
           flags:  ['COLUMN_SCALAR', 'PERSISTENT'],
-          domain: table.name,
+          domain: rawTable.name,
           range:  'UInt32',
           source: null
         };
 
-        angular.forEach(columns, function(column, name) {
-          columns[name] = buildColumn(table, column);
+        angular.forEach(rawTable.columns, function(rawColumn, name) {
+          columns[name] = buildColumn(rawTable, rawColumn);
         });
 
         return columns;
