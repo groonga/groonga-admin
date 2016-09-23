@@ -239,6 +239,20 @@ angular.module('groongaAdminApp')
           source: null
         };
 
+        if (rawTable.type != 'array') {
+          columns._key = {
+            name:    '_key',
+            id:      rawTable.id || 0,
+            path:    '',
+            type:    'fix',
+            flags:   ['COLUMN_SCALAR'],
+            domain:  rawTable.name,
+            range:   rawTable.key_type.name,
+            source:  null,
+            indexes: []
+          };
+        }
+
         angular.forEach(rawTable.columns, function(rawColumn, name) {
           columns[name] = buildColumn(rawTable, rawColumn);
         });
