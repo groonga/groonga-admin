@@ -186,39 +186,37 @@ angular.module('groongaAdminApp')
           });
       }
 
+      var THREAD_LIMIT_UNKNOWN = 0;
+      function setThreadLimit(limit) {
+        return client.execute('thread_limit', { max: limit })
+          .then(function(response) {
+            return response.lastMaxLimit();
+          }, function(errorResponse) {
+            return THREAD_LIMIT_UNKNOWN;
+          });
+      }
+
       function fetchSchema(schema) {
         schema.tables = {};
-        var lastMaxLimit;
-        return client.execute('thread_limit', { max: 1 })
-          .success(function(response) {
-            lastMaxLimit = response.lastMaxLimit();
-          })
-          .error(function() {
+        var lastMaxLimitBackup;
+        return setThreadLimit(1)
+          .then(function(lastMaxLimit) {
+            lastMaxLimitBackup = lastMaxLimit;
           })
           .then(function() {
             return client.execute('schema')
-                    .success(function(response) {
+                    .then(function(response) {
                       schema.types = buildTypes(response.types());
                       schema.tables = buildTables(response.tables());
                       resolveIndexes(schema);
-                      return schema;
-                    })
-                    .error(function() {
-                      return null;
-                    });
+                    }, function(errorResponse) {});
           })
-          .then(function(schema) {
-            if (!lastMaxLimit)
-              return schema;
-            return client.execute('thread_limit', { max: lastMaxLimit })
-                    .success(function(response) {
-                      return schema;
-                    })
-                    .error(function() {
-                      return schema;
-                    });
+          .then(function() {
+            if (lastMaxLimitBackup === THREAD_LIMIT_UNKNOWN)
+              return;
+            return setThreadLimit(lastMaxLimitBackup);
           })
-          .then(function(schema) {
+          .then(function() {
             fetched = true;
             fetching = false;
             waitingDeferes.forEach(function(defer) {
