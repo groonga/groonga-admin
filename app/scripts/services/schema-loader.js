@@ -197,15 +197,15 @@ angular.module('groongaAdminApp')
           })
           .then(function() {
             return client.execute('schema')
-          .success(function(response) {
-            schema.types = buildTypes(response.types());
-            schema.tables = buildTables(response.tables());
-            resolveIndexes(schema);
-            return schema;
-          })
-            .error(function() {
-              return null;
-            });
+                    .success(function(response) {
+                      schema.types = buildTypes(response.types());
+                      schema.tables = buildTables(response.tables());
+                      resolveIndexes(schema);
+                      return schema;
+                    })
+                    .error(function() {
+                      return null;
+                    });
           })
           .then(function(schema) {
             if (!lastMaxLimit)
