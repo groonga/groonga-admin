@@ -188,11 +188,37 @@ angular.module('groongaAdminApp')
 
       function fetchSchema(schema) {
         schema.tables = {};
-        return client.execute('schema')
+        var lastMaxLimit;
+        return client.execute('thread_limit', { max: 1 })
+          .success(function(response) {
+            lastMaxLimit = response.lastMaxLimit();
+          })
+          .error(function() {
+          })
+          .then(function() {
+            return client.execute('schema')
           .success(function(response) {
             schema.types = buildTypes(response.types());
             schema.tables = buildTables(response.tables());
             resolveIndexes(schema);
+            return schema;
+          })
+            .error(function() {
+              return null;
+            });
+          })
+          .then(function(schema) {
+            if (!lastMaxLimit)
+              return schema;
+            return client.execute('thread_limit', { max: lastMaxLimit })
+                    .success(function(response) {
+                      return schema;
+                    })
+                    .error(function() {
+                      return schema;
+                    });
+          })
+          .then(function(schema) {
             fetched = true;
             fetching = false;
             waitingDeferes.forEach(function(defer) {
