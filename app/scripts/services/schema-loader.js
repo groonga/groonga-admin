@@ -186,13 +186,37 @@ angular.module('groongaAdminApp')
           });
       }
 
+      var THREAD_LIMIT_UNKNOWN = 0;
+      function setThreadLimit(limit) {
+        return client.execute('thread_limit', { max: limit })
+          .then(function(response) {
+            return response.lastMaxLimit();
+          }, function(errorResponse) {
+            return THREAD_LIMIT_UNKNOWN;
+          });
+      }
+
       function fetchSchema(schema) {
         schema.tables = {};
-        return client.execute('schema')
-          .success(function(response) {
-            schema.types = buildTypes(response.types());
-            schema.tables = buildTables(response.tables());
-            resolveIndexes(schema);
+        var lastMaxLimitBackup;
+        return setThreadLimit(1)
+          .then(function(lastMaxLimit) {
+            lastMaxLimitBackup = lastMaxLimit;
+          })
+          .then(function() {
+            return client.execute('schema')
+                    .then(function(response) {
+                      schema.types = buildTypes(response.types());
+                      schema.tables = buildTables(response.tables());
+                      resolveIndexes(schema);
+                    }, function(errorResponse) {});
+          })
+          .then(function() {
+            if (lastMaxLimitBackup === THREAD_LIMIT_UNKNOWN)
+              return;
+            return setThreadLimit(lastMaxLimitBackup);
+          })
+          .then(function() {
             fetched = true;
             fetching = false;
             waitingDeferes.forEach(function(defer) {
