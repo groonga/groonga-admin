@@ -30,6 +30,22 @@
     this._parameters = parameters;
   };
 
+  GroongaClient.Request.prototype.then = function(successCallback, errorCallback) {
+    var name = this._name;
+    return this._rawRequest.then(
+      function(rawResponse) {
+        var ResponseConstructor = GroongaClient.Response.find(name);
+        var response = new ResponseConstructor(rawResponse.data);
+        return successCallback(response, rawResponse);
+      },
+      function(rawResponse) {
+        var ResponseConstructor = GroongaClient.Response.find(name);
+        var response = new ResponseConstructor(rawResponse.data);
+        return errorCallback(response, rawResponse);
+      }
+    );
+  };
+
   GroongaClient.Request.prototype.success = function(callback) {
     var name = this._name;
     return this._rawRequest.then(function(rawResponse) {
