@@ -40,6 +40,7 @@
   };
 
   GroongaClient.Request.prototype.error = function(callback) {
+    var name = this._name;
     return this._rawRequest.then(null, function(rawResponse) {
       var ResponseConstructor = GroongaClient.Response.find(name);
       var response = new ResponseConstructor(rawResponse.data);
