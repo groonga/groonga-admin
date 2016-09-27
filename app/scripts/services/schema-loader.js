@@ -184,7 +184,7 @@ angular.module('groongaAdminApp')
         return client.execute('thread_limit', { max: limit })
           .then(function(response) {
             return response.lastMaxLimit();
-          }, function(errorResponse) {
+          }, function(/* errorResponse */) {
             return THREAD_LIMIT_UNKNOWN;
           });
       }
@@ -202,7 +202,7 @@ angular.module('groongaAdminApp')
                       schema.types = buildTypes(response.types());
                       schema.tables = buildTables(response.tables());
                       resolveIndexes(schema);
-                    }, function(errorResponse) {});
+                    }, function(/* errorResponse */) {});
           })
           .then(function() {
             if (lastMaxLimitBackup === THREAD_LIMIT_UNKNOWN)
