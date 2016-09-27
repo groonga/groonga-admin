@@ -284,9 +284,6 @@ angular.module('groongaAdminApp')
 
       function selectDrilldown(key, value) {
         var queryKey = key;
-        var column = findElement($scope.table.allColumns, function(column) {
-          return column.name === key;
-        });
 
         var escapedValue;
         if (typeof value === 'string') {
