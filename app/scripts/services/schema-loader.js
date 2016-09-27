@@ -71,10 +71,10 @@ angular.module('groongaAdminApp')
           };
         }
 
-        table.isArray           = table.type == 'array';
-        table.isHashTable       = table.type == 'hash table';
-        table.isPatriciaTrie    = table.type == 'patricia trie';
-        table.isDoubleArrayTrie = table.type == 'double attay trie';
+        table.isArray           = table.type === 'array';
+        table.isHashTable       = table.type === 'hash table';
+        table.isPatriciaTrie    = table.type === 'patricia trie';
+        table.isDoubleArrayTrie = table.type === 'double attay trie';
         table.hasKey            = !table.isArray;
 
         table.range  = table.valueType; // for backward compatibility
@@ -129,12 +129,12 @@ angular.module('groongaAdminApp')
           column.valueType = {
             name: rawColumn.value_type.name,
             isTextType: isTextType(rawColumn.value_type.name),
-            isReferenceType: rawColumn.value_type.type == 'reference'
+            isReferenceType: rawColumn.value_type.type === 'reference'
           };
 
-        column.isScalar = column.type == 'scalar';
-        column.isVector = column.type == 'vector';
-        column.isIndex  = column.type == 'index';
+        column.isScalar = column.type === 'scalar';
+        column.isVector = column.type === 'vector';
+        column.isIndex  = column.type === 'index';
 
         column.range  = column.valueType && column.valueType.name; // for backward compatibility
         column.domain = rawTable.name; // for backward compatibility
