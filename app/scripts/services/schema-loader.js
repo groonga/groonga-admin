@@ -53,15 +53,9 @@ angular.module('groongaAdminApp')
         table.normalizer   = rawTable.normalizer && rawTable.normalizer.name;
         table.type         = rawTable.type;
 
-        table.flags = [];
-        if (rawTable.command &&
-            rawTable.command.arguments &&
-            rawTable.command.arguments.flags)
-          table.flags = rawTable.command.arguments.flags.split('|');
+        table.flags = rawTable.command.arguments.flags.split('|');
 
-        table.tokenFilters = '';
-        if (rawTable.token_filters)
-          table.tokenFilters = rawTable.token_filters.join('|'); // XXX what is the correct delimiter?
+        table.tokenFilters = rawTable.token_filters.join(',');
 
         table.keyType = null;
         if (rawTable.key_type) {
