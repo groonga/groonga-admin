@@ -158,7 +158,7 @@ angular.module('groongaAdminApp')
           indexes: []
         };
 
-        if (rawTable.type != 'array') {
+        if (rawTable.type !== 'array') {
           columns._key = {
             name:    '_key',
             id:      rawTable.id || 0,
