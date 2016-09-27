@@ -179,13 +179,6 @@ angular.module('groongaAdminApp')
         return columns;
       }
 
-      function fetchColumns(table) {
-        return client.execute('schema')
-          .success(function(response) {
-            table.columns = buildColumns(response.tables()[table.name]);
-          });
-      }
-
       var THREAD_LIMIT_UNKNOWN = 0;
       function setThreadLimit(limit) {
         return client.execute('thread_limit', { max: limit })
