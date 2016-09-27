@@ -205,8 +205,9 @@ angular.module('groongaAdminApp')
                     }, function(/* errorResponse */) {});
           })
           .then(function() {
-            if (lastMaxLimitBackup === THREAD_LIMIT_UNKNOWN)
+            if (lastMaxLimitBackup === THREAD_LIMIT_UNKNOWN) {
               return;
+            }
             return setThreadLimit(lastMaxLimitBackup);
           })
           .then(function() {
