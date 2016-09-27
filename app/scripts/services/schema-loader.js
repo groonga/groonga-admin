@@ -48,7 +48,7 @@ angular.module('groongaAdminApp')
         table.id           = 0; // XXX it exists in a table_list response but missing in a schema response.
         table.name         = rawTable.name;
         table.path         = ''; // XXX it exists in a table_list response but missing in a schema response.
-        table.valueType    = rawTable.value_type && rawTable.value_type.name
+        table.valueType    = rawTable.value_type && rawTable.value_type.name;
         table.tokenizer    = rawTable.tokenizer && rawTable.tokenizer.name;
         table.normalizer   = rawTable.normalizer && rawTable.normalizer.name;
         table.type         = rawTable.type;
