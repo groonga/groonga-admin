@@ -43,7 +43,7 @@ angular.module('groongaAdminApp')
         }
       }
 
-      function buildTable(rawTable) {
+      function buildTable(rawTypes, rawTable) {
         var table = {};
         table.id           = 0; // XXX it exists in a table_list response but missing in a schema response.
         table.name         = rawTable.name;
@@ -80,15 +80,15 @@ angular.module('groongaAdminApp')
         table.range  = table.valueType; // for backward compatibility
         table.domain = table.keyType && table.keyType.name; // for backward compatibility
 
-        table.columns = buildColumns(rawTable);
+        table.columns = buildColumns(rawTypes, rawTable);
 
         return table;
       }
 
-      function buildTables(rawTables) {
+      function buildTables(rawTypes, rawTables) {
         var tables = {};
         angular.forEach(rawTables, function(rawTable, name) {
-          tables[name] = buildTable(rawTable);
+          tables[name] = buildTable(rawTypes, rawTable);
         });
         return tables;
       }
@@ -105,32 +105,25 @@ angular.module('groongaAdminApp')
 
       function buildColumn(rawTable, rawColumn) {
         var column = {};
-        column.id       = 0; // XXX it exists in a table_list response but missing in a schema response.
+        column.id       = rawColumn.id || 0;
         column.name     = rawColumn.name;
-        column.path     = ''; // XXX it exists in a table_list response but missing in a schema response.
+        column.path     = rawColumn.path || '';
         column.type     = rawColumn.type;
+        // TODO: Wrong. It should be 'fix' or 'var'. It can be removable.
         column.sizeType = rawColumn.type;
         column.table    = rawTable;
 
-        column.flags = [];
-        if (rawColumn.command &&
-            rawColumn.command.arguments &&
-            rawColumn.command.arguments.flags)
-          column.flags = rawColumn.command.arguments.flags.split('|');
+        column.flags = rawColumn.command.arguments.flags.split('|');
 
-        column.sources = [];
-        if (rawColumn.sources)
-          column.sources = rawColumn.sources.map(function(source) {
-            return source.full_name.replace(/\._key$/, '');
-          });
+        column.sources = rawColumn.sources.map(function(source) {
+          return source.full_name.replace(/\._key$/, '');
+        });
 
-        column.valueType = null;
-        if (rawColumn.value_type)
-          column.valueType = {
-            name: rawColumn.value_type.name,
-            isTextType: isTextType(rawColumn.value_type.name),
-            isReferenceType: rawColumn.value_type.type === 'reference'
-          };
+        column.valueType = {
+          name: rawColumn.value_type.name,
+          isTextType: isTextType(rawColumn.value_type.name),
+          isReferenceType: rawColumn.value_type.type === 'reference'
+        };
 
         column.isScalar = column.type === 'scalar';
         column.isVector = column.type === 'vector';
@@ -143,32 +136,52 @@ angular.module('groongaAdminApp')
         return column;
       }
 
-      function buildColumns(rawTable) {
+      function buildColumns(rawTypes, rawTable) {
         var columns = {};
 
-        columns._id = {
-          name:    '_id',
-          id:      rawTable.id || 0,
-          path:    rawTable.path || '',
-          type:    'scalar',
-          flags:   ['COLUMN_SCALAR', 'PERSISTENT'],
-          domain:  rawTable.name,
-          range:   'UInt32',
-          sources: [],
-          indexes: []
+        rawTable.columns._id = {
+          id:        0,
+          name:      '_id',
+          table:     rawTable.name,
+          full_name: rawTable.name + '._id',
+          type:      'scalar',
+          value_type: {
+            id:   rawTypes.UInt32.id,
+            name: 'UInt32',
+            type: 'type'
+          },
+          compress:  null,
+          section:   false,
+          weight:    false,
+          position:  false,
+          sources:   [],
+          indexes:   [],
+          command: {
+            arguments: {
+              flags: 'COLUMN_SCALAR'
+            }
+          }
         };
 
         if (rawTable.type !== 'array') {
-          columns._key = {
-            name:    '_key',
-            id:      rawTable.id || 0,
-            path:    '',
-            type:    'scalar',
-            flags:   ['COLUMN_SCALAR'],
-            domain:  rawTable.name,
-            range:   rawTable.key_type.name,
-            sources: [],
-            indexes: rawTable.indexes || []
+          rawTable.columns._key = {
+            id:        0,
+            name:      '_key',
+            table:     rawTable.name,
+            full_name: rawTable.name + '._key',
+            type:      'scalar',
+            value_type: rawTable.key_type,
+            compress:  null,
+            section:   false,
+            weight:    false,
+            position:  false,
+            sources:   [],
+            indexes:   rawTable.indexes || [],
+            command: {
+              arguments: {
+                flags: 'COLUMN_SCALAR'
+              }
+            }
           };
         }
 
@@ -200,7 +213,8 @@ angular.module('groongaAdminApp')
             return client.execute('schema')
                     .then(function(response) {
                       schema.types = buildTypes(response.types());
-                      schema.tables = buildTables(response.tables());
+                      schema.tables = buildTables(response.types(),
+                                                  response.tables());
                       resolveIndexes(schema);
                     }, function(/* errorResponse */) {});
           })
