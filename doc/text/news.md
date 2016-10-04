@@ -1,5 +1,12 @@
 # News
 
+## 0.9.5: 2016-10-04
+
+### Improvements
+
+  * Dropped Groonga 5.0.8 or earlier.
+  * Reduced the number of requests to get schema information.
+
 ## 0.9.4: 2015-11-23
 
 ### Improvements
