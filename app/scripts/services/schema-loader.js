@@ -45,7 +45,7 @@ angular.module('groongaAdminApp')
 
       function buildTable(rawTypes, rawTable) {
         var table = {};
-        table.id           = 0; // XXX it exists in a table_list response but missing in a schema response.
+        table.id           = rawTable.id;
         table.name         = rawTable.name;
         table.path         = ''; // XXX it exists in a table_list response but missing in a schema response.
         table.valueType    = rawTable.value_type && rawTable.value_type.name;
