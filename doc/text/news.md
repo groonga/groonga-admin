@@ -1,5 +1,16 @@
 # News
 
+## 0.9.6: 2019-02-25
+
+### Improvements
+
+  * search: Column value was changed to use preformatted.
+  * search: Showing table id was supported.
+
+### Fixes
+
+  * Fixed vulnerabilities about depended packages (Detected by npm audit) [GitHub#15]
+
 ## 0.9.5: 2016-10-13
 
 ### Improvements
